@@ -1,0 +1,25 @@
+<head>
+  <title>TripPlanner</title>
+</head>
+
+<body>
+  <h1>Enter List of Locations Here</h1>
+
+  {{> hello}}
+  {{> locEntry}}
+
+</body>
+
+<template name="locEntry">
+	<textarea id="newLocation"></textarea>
+	<ul class="locs">
+		{{#each allLocations}}
+			<li id="{{idnum}}">{{title}}</li>
+		{{/each}}
+	</ul>
+</template>
+
+<template name="hello">
+  <button>Click Me</button>
+  <p>You've pressed the button {{counter}} times.</p>
+</template>
