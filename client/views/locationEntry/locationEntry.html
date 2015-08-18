@@ -1,0 +1,22 @@
+<template name="locEntry">
+  <head>
+    <title>TripPlanner</title>
+  </head>
+
+  <body>
+    <h1>Enter List of Locations Here</h1>
+  </body>
+  
+  <textarea id="newLocation"></textarea>
+  <div id="locations" class="locs ui-sortable">
+    {{#each allLocations}}
+      <div id="{{idnum}}" class="loc ui-sortable-handle">
+        {{title}}
+      </div>
+    {{/each}}
+  </div>
+
+  <button id="submitLocations">Submit</button>
+
+</template>
+

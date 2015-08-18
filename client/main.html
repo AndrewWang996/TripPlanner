@@ -1,28 +1,7 @@
 <head>
   <title>TripPlanner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<noscript>
+    Please turn on javascript to view this site. Thank you! (Refresh the page to clear this message.)
+	</noscript>
 </head>
-
-<body background="http://cdn2.landscapehdwalls.com/wallpapers/1/green-mountainside-462-2560x1600.jpg">
-  <h1>Enter List of Locations Here</h1>
-
-  {{> hello}}
-  {{> locEntry}}
-
-</body>
-
-<template name="locEntry">
-	<textarea id="newLocation"></textarea>
-	<div id="locations" class="locs ui-sortable">
-		{{#each allLocations}}
-			<div id="{{idnum}}" class="loc ui-sortable-handle">
-				{{title}}
-			</div>
-		{{/each}}
-	</div>
-	<button id="submitLocations">Submit</button>
-</template>
-
-<template name="hello">
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
-</template>
