@@ -2,7 +2,7 @@
   <title>TripPlanner</title>
 </head>
 
-<body>
+<body background="http://cdn2.landscapehdwalls.com/wallpapers/1/green-mountainside-462-2560x1600.jpg">
   <h1>Enter List of Locations Here</h1>
 
   {{> hello}}
@@ -12,11 +12,14 @@
 
 <template name="locEntry">
 	<textarea id="newLocation"></textarea>
-	<ul class="locs">
+	<div id="locations" class="locs ui-sortable">
 		{{#each allLocations}}
-			<li id="{{idnum}}">{{title}}</li>
+			<div id="{{idnum}}" class="loc ui-sortable-handle">
+				{{title}}
+			</div>
 		{{/each}}
-	</ul>
+	</div>
+	<button id="submitLocations">Submit</button>
 </template>
 
 <template name="hello">

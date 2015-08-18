@@ -8,3 +8,6 @@ meteor-platform
 autopublish
 insecure
 aldeed:geocoder
+blaze
+mizzao:jquery-ui
+less

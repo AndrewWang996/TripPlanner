@@ -17,7 +17,7 @@ Template.hello.events({
 
 Template.locEntry.helpers({
   allLocations: function() {
-    return Locations.find();
+    return Locations.find({}, {sort: {rank: 1}});
   }
 });
 
@@ -27,7 +27,9 @@ Template.locEntry.events({
       var element = document.getElementById("newLocation");
 
       var locObj = {};
-      locObj.idnum = "id" + Locations.find().count().toString();
+      var index = Locations.find().count();
+      locObj.rank = index;
+      locObj.idnum = "id" + index.toString();
       locObj.title = element.value;
 
       Locations.insert( locObj );
@@ -37,5 +39,34 @@ Template.locEntry.events({
       element.value = "";
       return false;
     }
+  },
+  'click button': function(event, template) {
+    alert("hello");
   }
 });
+
+Template.locEntry.rendered = function(){
+  $('#locations').sortable({
+    stop: function(e, ui) {
+      var newRank = null;
+      var element = ui.item.get(0);
+      var prev = ui.item.prev().get(0);
+      var next = ui.item.next().get(0);
+      if(!prev) {
+        newRank = Blaze.getData(next).rank - 1;
+      } else if(!next) {
+        newRank = Blaze.getData(prev).rank + 1;
+      } else {
+        var previous = Blaze.getData(element).rank
+        var a = Blaze.getData(next).rank
+        var b = Blaze.getData(prev).rank
+        if(previous > a || previous < b) {
+          newRank = (a + b)/2
+        }
+      }
+      if(newRank) {
+        Locations.update({_id: Blaze.getData(element)._id}, {$set: {rank: newRank}});
+      }
+    }
+  });
+};
