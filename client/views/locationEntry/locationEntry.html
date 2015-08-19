@@ -11,17 +11,29 @@
         <p>View the <a href="https://github.com/AndrewWang996/TripPlanner">source code</a>.</p>
     </div>
   </body>
-  
-  <textarea id="newLocation"></textarea>
-  <div id="locations" class="list-group ui-sortable">
-    {{#each allLocations}}
-      <div id="{{idnum}}" class="list-group-item active ui-sortable-handle">
-        {{title}}
-      </div>
-    {{/each}}
-  </div>
 
-  <button id="submitPath" type="submit" class="btn btn-lg btn-primary btn-block">Create Path</button>
+  <form class="poll-form"> 
+    <div class="form-group question-group">
+        <label>Path Name</label>
+        <input type="text" id="newPath" class="form-control" placeholder="Example: Europe Tour">
+    </div>
+
+    <div class="form-group question-group">
+        <label>New Location</label>
+        <input type="text" id="newLocation" class="form-control" placeholder="Example: Paris">
+    </div>
+
+    <div id="locations" class="list-group ui-sortable">
+      {{#each allLocations}}
+        <div id="{{idnum}}" class="list-group-item ui-sortable-handle">
+          {{title}}
+        </div>
+      {{/each}}
+    </div>
+
+    <button type="submit" id="submitPath" class="btn btn-lg btn-primary btn-block">Create Path</button>
+  </form>
+  
 
 </template>
 
