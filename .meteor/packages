@@ -13,3 +13,5 @@ mizzao:jquery-ui
 less
 nemo64:bootstrap
 iron:router
+underscore
+meteorhacks:fast-render
