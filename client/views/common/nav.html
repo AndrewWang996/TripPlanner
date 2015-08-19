@@ -1,0 +1,56 @@
+<template name="nav">
+	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	  <div class="container-fluid">
+	    <div class="navbar-header">
+	      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-nav">
+	        <span class="sr-only">Toggle navigation</span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	      </button>
+	      <!-- <a class="navbar-brand" href="{{pathFor 'home'}}">{{getSetting "clubName"}}</a> -->
+	    </div>
+
+	    <!-- Collect the nav links, forms, and other content for toggling -->
+	    <div class="collapse navbar-collapse" id="main-nav">
+	      <ul class="nav navbar-nav">
+					<li class="{{currentPage 'events'}}"><a href="{{pathFor 'events'}}">Events</a></li>
+					<li class="{{currentPage 'members'}}"><a href="{{pathFor 'members'}}">Members</a></li>
+					<li class="{{currentPage 'contact'}}"><a href="{{pathFor 'contact'}}">Contact</a></li>
+
+					{{#if isAdmin}}
+						<li class="{{currentPage 'admin'}}"><a href="{{pathFor 'admin'}}">Admin</a></li>
+					{{/if}}
+					{{#if currentUser}}
+						<li class="{{currentPage 'profile'}}"><a href="{{pathFor 'profile'}}">Profile</a></li>
+					{{/if}}
+				</ul>
+
+	      <ul class="nav navbar-nav navbar-right">
+		      {{#if currentUser}}
+						<form class="navbar-form">
+							<button id="js-logout" class="btn btn-primary" type="submit">Log Out</button>
+						</form>
+					{{else}}
+		        <li><a href="#" class="js-toggle-modal" data-toggle="signupModal">Sign Up</a></li>
+		        <li class="dropdown">
+	            <a class="dropdown-toggle" href="#" data-toggle="dropdown">Log In <span class="caret"></span></a>
+	            <div class="dropdown-menu" role="menu">
+	            	<form class="login-form" id="js-login">
+	            		<input id="js-email" class="form-control" type="text" placeholder="Email">
+									<input id="js-password" class="form-control" type="password" placeholder="Password">
+									<input class="login-submit btn btn-primary" type="submit" value="Log In">
+									<a href="{{pathFor 'recovery'}}">Forgot?</a>
+								</form>
+	            </div>
+	          </li>
+          {{/if}}
+	      </ul>
+
+	      {{#if currentUser}}
+		    	<p class="navbar-text navbar-right">Welcome, {{formatName currentUser._id}}!</p>
+		    {{/if}}
+	    </div>
+	  </div>
+	</nav>
+</template>
