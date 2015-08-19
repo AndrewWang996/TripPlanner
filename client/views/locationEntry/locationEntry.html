@@ -6,23 +6,22 @@
 
 
   <body>
-    <h1>Enter List of Locations Here</h1>
     <div class="page-header text-center">
-        <h1>A Simple Meteor.js Real-Time Polling Application</h1>
-        <p>View the <a href="https://scotch.io/tutorials/learn-meteor-js-from-scratch-build-a-polling-app">tutorial</a> by <a href="https://scotch.io">scotch.io</a>.</p>
+        <h1>Enter List of Locations Here</h1>
+        <p>View the <a href="https://github.com/AndrewWang996/TripPlanner">source code</a>.</p>
     </div>
   </body>
   
   <textarea id="newLocation"></textarea>
-  <div id="locations" class="locs ui-sortable">
+  <div id="locations" class="list-group ui-sortable">
     {{#each allLocations}}
-      <div id="{{idnum}}" class="loc ui-sortable-handle">
+      <div id="{{idnum}}" class="list-group-item active ui-sortable-handle">
         {{title}}
       </div>
     {{/each}}
   </div>
 
-  <button id="submitLocations">Submit</button>
+  <button id="submitPath" type="submit" class="btn btn-lg btn-primary btn-block">Create Path</button>
 
 </template>
 

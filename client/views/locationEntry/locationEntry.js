@@ -40,8 +40,11 @@ Template.locEntry.events({
       return false;
     }
   },
-  'click button': function(event, template) {
+  'click #submitPath': function(event, template) {
     alert("hello");
+  },
+  'hover .li': function(event, template) {
+    alert("hi");
   }
 });
 
