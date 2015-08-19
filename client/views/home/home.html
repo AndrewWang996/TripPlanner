@@ -5,14 +5,16 @@
 	{{/if}}
 </template>
 
-<template name="home">
-	{{> contentFor region="pageHeader" template="homeHeader"}}
 
-  {{> homeCarousel}}
+<template name="home">
+  hello
+	<!-- {{> contentFor region="pageHeader" template="homeHeader"}} -->
+
+  <!-- {{> homeCarousel}} -->
 
   <div class="page-body">
     <div class="list">
-    	{{#each posts}}
+    	<!-- {{#each posts}}
         {{> postItem}}
     	{{/each}}
 
@@ -25,7 +27,7 @@
       			There currently are no posts on the server.
       		</div>
         </div>
-    	{{/unless}}
+    	{{/unless}} -->
     </div>
   </div>
 </template>
