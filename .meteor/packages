@@ -11,7 +11,7 @@ aldeed:geocoder
 blaze
 mizzao:jquery-ui
 less
-nemo64:bootstrap
+mizzao:bootstrap-3
 iron:router
 underscore
 meteorhacks:fast-render
