@@ -10,7 +10,7 @@
 	      </button>
 	      <!-- <a class="navbar-brand" href="{{pathFor 'home'}}">{{getSetting "clubName"}}</a> -->
 	      <!-- <a class="navbar-brand" href="http://www.facebook.com">TripPlanner</a> -->
-	      <a class="navbar-brand" href="https:/www.facebook.com/{{pathFor 'home'}}">TripPlanner</a>
+	      <a class="navbar-brand" href="{{pathFor route='home'}}">TripPlanner</a>
 	    </div>
 
 	    <!-- Collect the nav links, forms, and other content for toggling -->
@@ -19,6 +19,8 @@
 					<li class="{{currentPage 'events'}}"><a href="{{pathFor 'paths'}}">Paths</a></li>
 					<!-- <li class="{{currentPage 'members'}}"><a href="{{pathFor 'members'}}">Members</a></li> -->
 					<li class="{{currentPage 'contact'}}"><a href="{{pathFor 'contact'}}">Contact</a></li>
+
+					<li class="{{currentPage 'locEntry'}}"><a href="{{pathFor 'locEntry'}}">Location Entry</a></li>
 
 					{{#if isAdmin}}
 						<li class="{{currentPage 'admin'}}"><a href="{{pathFor 'admin'}}">Admin</a></li>
