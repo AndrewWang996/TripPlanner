@@ -22,6 +22,14 @@ Template.locEntry.helpers({
 });
 
 Template.locEntry.events({
+
+  /*
+  Determines what happens after form data / Path is submitted.
+  Needs serious fixing.
+  Internet seems to indicate that ranking system is necessary,
+  although changing the Locations collection after submitting seems
+  to be better choice than manipulating collection during sorting.
+  */
   'keydown #newLocation': function(event, template) {
     if(event.keyCode == 13) {
       var element = document.getElementById("newLocation");
