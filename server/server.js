@@ -10,17 +10,19 @@ Meteor.startup(function () {
   };
 
   var geo = new GeoCoder();
-  var result = geo.geocode('29 champs elysée paris');
-  console.log(result);
-  console.log(geo.geocode('paris'));
+  // var result = geo.geocode('29 champs elysée paris');
+  // console.log(result);
+  // console.log(geo.geocode('paris'));
 
-  Meteor.startup(function(){
-    var globalObject=Meteor.isClient?window:global;
-    for(var property in globalObject){
-        var object=globalObject[property];
-        if(object instanceof Meteor.Collection){
-            object.remove({});
-        }
-    }
-  });
+
+  /*
+    Code causes database to be cleared
+  */
+  // var globalObject=Meteor.isClient?window:global;
+  // for(var property in globalObject){
+  //   var object=globalObject[property];
+  //   if(object instanceof Meteor.Collection){
+  //       object.remove({});
+  //   }
+  // }
 });
