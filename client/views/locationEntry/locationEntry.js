@@ -49,35 +49,18 @@ Template.locEntry.events({
     }
   },
   'click #submitPath': function(event, template) {
-    alert("hello");
-  },
-  'hover .li': function(event, template) {
-    alert("hi");
+    var locs = [];
+    $(".location-item").each(function() {
+      locs.push($(this).text());
+    });
+    var path = document.getElementById("newPath");
+    Paths.insert({
+      'path': locs,
+      'name': path.value
+    });
   }
 });
 
 Template.locEntry.rendered = function(){
-  $('#locations').sortable({
-    stop: function(e, ui) {
-      var newRank = null;
-      var element = ui.item.get(0);
-      var prev = ui.item.prev().get(0);
-      var next = ui.item.next().get(0);
-      if(!prev) {
-        newRank = Blaze.getData(next).rank - 1;
-      } else if(!next) {
-        newRank = Blaze.getData(prev).rank + 1;
-      } else {
-        var previous = Blaze.getData(element).rank
-        var a = Blaze.getData(next).rank
-        var b = Blaze.getData(prev).rank
-        if(previous > a || previous < b) {
-          newRank = (a + b)/2
-        }
-      }
-      if(newRank) {
-        Locations.update({_id: Blaze.getData(element)._id}, {$set: {rank: newRank}});
-      }
-    }
-  });
+  $('#locations').sortable();
 };
