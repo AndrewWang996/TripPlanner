@@ -1,0 +1,36 @@
+<template name="pathsHeader">
+	<h1>Paths <small>Come check out our events! <i class="fa fa-smile-o"></i></small></h1>
+	<ul class="inline">
+	{{#if isAdmin}}
+		<li><a href="#" role="button" class="btn btn-primary js-toggle-modal" data-toggle="addEventModal">Add Event</a></li>
+	{{/if}}
+	{{#if currentUser}}
+		<li><a href="#" role="button" class="btn btn-primary js-toggle-modal" data-toggle="suggestEventModal">Suggest Event</a></li>
+	{{/if}}
+	</ul>
+</template>
+
+<template name="paths">
+	{{> contentFor region="pageHeader" template="pathsHeader"}}
+
+	<div class="page-body">
+		<div class="list">
+			{{#if paths.count}}
+				{{#each paths}}
+					{{> pathItem}}
+				{{/each}}
+				<!-- 
+				{{#if moreEvents}}
+			    {{> loading}}
+				{{/if}} -->
+			{{else}}
+				<div class="list-item">
+					<div class="list-item-body">
+						Looks like you haven't created any paths yet.
+					</div>
+				</div>
+			{{/if}}
+		</div>
+	</div>
+</template>
+
