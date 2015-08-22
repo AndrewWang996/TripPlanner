@@ -51,8 +51,13 @@ Template.locEntry.events({
   'click #submitPath': function(event, template) {
     var locs = [];
     $(".location-item").each(function() {
-      locs.push($(this).text());
+      var locationName = $.trim( $(this).text() );
+      var locationData = geoCodeLoc(locationName);
+      console.log("location Data = " + locationData);
+      // locs.push(locationData);
+      locs.push(locationName);
     });
+    console.log(locs);
     var path = document.getElementById("newPath");
     Paths.insert({
       'path': locs,

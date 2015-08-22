@@ -9,7 +9,6 @@ accounts-password
 meteor-platform
 autopublish
 insecure
-aldeed:geocoder
 blaze
 mizzao:jquery-ui
 less
@@ -17,5 +16,5 @@ mizzao:bootstrap-3
 iron:router
 underscore
 meteorhacks:fast-render
-alethes:pages
-
+aldeed:geocoder
+meteorhacks:async
