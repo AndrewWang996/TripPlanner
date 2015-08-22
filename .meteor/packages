@@ -4,9 +4,10 @@
 # 'meteor add' and 'meteor remove' will edit this file for you,
 # but you can also edit it by hand.
 
+
+meteor-platform
 accounts-base
 accounts-password
-meteor-platform
 autopublish
 insecure
 blaze
@@ -16,5 +17,7 @@ mizzao:bootstrap-3
 iron:router
 underscore
 meteorhacks:fast-render
-aldeed:geocoder
 meteorhacks:async
+accounts-ui
+meteorhacks:npm
+npm-container

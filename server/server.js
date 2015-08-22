@@ -1,64 +1,16 @@
 
-
 Meteor.startup(function () {
 
-  function initMap() {
-    var map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 8,
-      center: {lat: -34.397, lng: 150.644}
-    });
-    var geocoder = new google.maps.Geocoder();
-
-    document.getElementById('submit').addEventListener('click', function() {
-      geocodeAddress(geocoder, map);
-    });
-  }
-
-  function geocodeAddress(geocoder, resultsMap) {
-    var address = document.getElementById('address').value;
-    geocoder.geocode({'address': address}, function(results, status) {
-      if (status === google.maps.GeocoderStatus.OK) {
-        resultsMap.setCenter(results[0].geometry.location);
-        var marker = new google.maps.Marker({
-          map: resultsMap,
-          position: results[0].geometry.location
-        });
-      } else {
-        alert('Geocode was not successful for the following reason: ' + status);
-      }
-    });
-  }
-
-
-  var geoCode = function(loc, callback) {
-    console.log("1. server geoCodeLoc called with " + loc);
-    var geoCodeProvider = 'google';
-    var httpAdapter = 'http';
-    var extra = {
-      apiKey: 'AIzaSyDKbfA_lfCc_SLS-HU_T2dHGJhyagXkZXw', // for Mapquest, OpenCage, Google Premier
-      formatter: null         // 'gpx', 'string', ...
-    };
-    console.log("2. server geoCodeLoc called with " + loc);
-    var geo = new GeoCoder();
-    var results = geo.geocode(loc);
-
-    console.log("3. server geoCodeLoc called with " + loc);
-    if(results.length === 0) {
-      console.log("4. a. server geoCodeLoc called with " + loc);
-      return {
-        'locationFound': false,
-        'locationData': null,
-        'numFound': 0
-      };
-    } else {
-      console.log("4. b. server geoCodeLoc called with " + loc);
-      return {
-        'locationFound': true,
-        'locationData': results[0],
-        'numFound': results.length
-      };
-    }
+  var geocoderProvider = 'google';
+  var httpAdapter = 'https';
+  // optionnal 
+  var extra = {
+      // apiKey: helpers.getSettings('GOOGLE_API_KEY'),
+      apiKey: 'AIzaSyDKbfA_lfCc_SLS-HU_T2dHGJhyagXkZXw', // for Mapquest, OpenCage, Google Premier 
+      formatter: null         // 'gpx', 'string', ... 
   };
+  var GoogleGeoCoder = Meteor.npmRequire('node-geocoder');
+  var geocoder = GoogleGeoCoder(geocoderProvider, httpAdapter, extra);
 
   Meteor.methods({
     abc: function() {
@@ -67,14 +19,45 @@ Meteor.startup(function () {
       result.bar = "World!";
       return result;
     },
-    geoCodeLoc: function(loc) {
-      var result = geoCode(loc);
-      console.log("geoCode result computed");
-      return result;
+    geoCodeLoc: function(loc, callback) {
+      console.log("1. server geoCodeLoc called with " + loc);
+
+      Future = Npm.require('fibers/future');
+      var myFuture = new Future();
+
+      geocoder.geocode(loc, function(err, res) {
+        if(err) {
+          myFuture.throw(err);
+        } else {
+          myFuture.return(res);
+        }
+      });
+
+      var results = myFuture.wait();
+
+      if(results.length === 0) {
+        console.log("2. a. server geoCodeLoc called with " + loc);
+        return {
+          'locationFound': false,
+          'locationData': null,
+          'numFound': 0
+        };
+      } else {
+        console.log("2. b. server geoCodeLoc called with " + loc);
+        return {
+          'locationFound': true,
+          'locationData': results[0],
+          'numFound': results.length
+        };
+      }
     }
   });
-  var result = Meteor.call('geoCodeLoc', '1362 oak knoll dr, san jose, ca');
+  var result = Meteor.call('geoCodeLoc', 'aoesunthqtjhkdqrjkxrcgucygugicg56210654017');
   console.log(result);
+
+
+
+
   // var geoCodeProvider = 'google';
   // var httpAdapter = 'http';
   // var extra = {
@@ -98,4 +81,6 @@ Meteor.startup(function () {
   //       object.remove({});
   //   }
   // }
+
+  Paths.remove({});
 });
