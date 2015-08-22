@@ -1,6 +1,7 @@
 
 Meteor.startup(function () {
 
+  /*
   var geocoderProvider = 'google';
   var httpAdapter = 'https';
   // optionnal 
@@ -13,13 +14,7 @@ Meteor.startup(function () {
   var geocoder = GoogleGeoCoder(geocoderProvider, httpAdapter, extra);
 
   Meteor.methods({
-    abc: function() {
-      var result = {};
-      result.foo = "Hello ";
-      result.bar = "World!";
-      return result;
-    },
-    geoCodeLoc: function(loc, callback) {
+    geoCodeLoc: function(loc) {
       console.log("1. server geoCodeLoc called with " + loc);
 
       Future = Npm.require('fibers/future');
@@ -52,27 +47,14 @@ Meteor.startup(function () {
       }
     }
   });
-  var result = Meteor.call('geoCodeLoc', 'aoesunthqtjhkdqrjkxrcgucygugicg56210654017');
+
+  var result = Meteor.call('geoCodeLoc', '1362 Oak Knoll Dr, San Jose, CA');
   console.log(result);
-
-
-
-
-  // var geoCodeProvider = 'google';
-  // var httpAdapter = 'http';
-  // var extra = {
-  //   apiKey: 'AIzaSyDKbfA_lfCc_SLS-HU_T2dHGJhyagXkZXw', // for Mapquest, OpenCage, Google Premier
-  //   formatter: null         // 'gpx', 'string', ...
-  // };
-
-  // var geo = new GeoCoder();
-  // var result = geo.geocode('29 champs elysée paris');
-  // console.log(result);
-  // console.log(geo.geocode('paris'));
+  */
 
 
   /*
-    Code causes database to be cleared on restart
+    Code causes database to be cleared on server restart
   */
   // var globalObject=Meteor.isClient?window:global;
   // for(var property in globalObject){
@@ -82,5 +64,8 @@ Meteor.startup(function () {
   //   }
   // }
 
-  Paths.remove({});
+  /*
+    Code causes only Paths collection to be cleared on server restart
+  */
+  // Paths.remove({});
 });

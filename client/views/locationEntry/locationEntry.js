@@ -1,23 +1,10 @@
-// // counter starts at 0
-// Session.setDefault('counter', 0);
-
-// Template.hello.helpers({
-//   counter: function () {
-//     return Session.get('counter');
-//   }
-// });
-
-// Template.hello.events({
-//   'click button': function () {
-//     // increment the counter when button is clicked
-//     Session.set('counter', Session.get('counter') + 1);
-//   }
-// });
-
-
 Template.locEntry.helpers({
   allLocations: function() {
     return Locations.find({}, {sort: {rank: 1}});
+  }, 
+  geoCodeLoc: function(loc) {
+    var s = ReactiveMethod.call("geoCodeLoc", loc);
+    return s;
   }
 });
 
@@ -52,9 +39,6 @@ Template.locEntry.events({
     var locs = [];
     $(".location-item").each(function() {
       var locationName = $.trim( $(this).text() );
-      var locationData = geoCodeLoc(locationName);
-      console.log("location Data = " + locationData);
-      // locs.push(locationData);
       locs.push(locationName);
     });
     console.log(locs);
@@ -63,6 +47,7 @@ Template.locEntry.events({
       'path': locs,
       'name': path.value
     });
+    Router.route('/paths');
   }
 });
 

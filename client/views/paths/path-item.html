@@ -2,7 +2,6 @@
 	<div class="list-item-info list-item-header clearfix">
 		<h3>{{this.name}}</h3>
 	</div>
-
 </template>
 
 <template name="pathItem">
@@ -10,6 +9,11 @@
 		<div class="list-item-header clearfix">
 			{{> pathItemHeader}}
 		</div>
+
+		<div class="map-container">
+			{{> googleMap name="exampleMap" options=exampleMapOptions}}
+		</div>
+
 		<div class="list-item-body">
 			<div class="clearfix">
 				<ul class="list">
