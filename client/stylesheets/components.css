@@ -27,3 +27,8 @@
   -ms-text-overflow:ellipsis;
   text-align: right;
 }
+
+.half {
+  flex: 1 0 50%;
+  background: #fff;
+}

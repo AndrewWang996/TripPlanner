@@ -12,45 +12,8 @@ Meteor.startup(function () {
   };
   var GoogleGeoCoder = Meteor.npmRequire('node-geocoder');
   var geocoder = GoogleGeoCoder(geocoderProvider, httpAdapter, extra);
-
-  Meteor.methods({
-    geoCodeLoc: function(loc) {
-      console.log("1. server geoCodeLoc called with " + loc);
-
-      Future = Npm.require('fibers/future');
-      var myFuture = new Future();
-
-      geocoder.geocode(loc, function(err, res) {
-        if(err) {
-          myFuture.throw(err);
-        } else {
-          myFuture.return(res);
-        }
-      });
-
-      var results = myFuture.wait();
-
-      if(results.length === 0) {
-        console.log("2. a. server geoCodeLoc called with " + loc);
-        return {
-          'locationFound': false,
-          'locationData': null,
-          'numFound': 0
-        };
-      } else {
-        console.log("2. b. server geoCodeLoc called with " + loc);
-        return {
-          'locationFound': true,
-          'locationData': results[0],
-          'numFound': results.length
-        };
-      }
-    }
-  });
-
-  var result = Meteor.call('geoCodeLoc', '1362 Oak Knoll Dr, San Jose, CA');
-  console.log(result);
   */
+
 
 //  var geoCodeProvider = 'google';
 //  var httpAdapter = 'http';
@@ -80,4 +43,7 @@ Meteor.startup(function () {
     Code causes only Paths collection to be cleared on server restart
   */
   // Paths.remove({});
+
+
+  // Locations.remove({});
 });

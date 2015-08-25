@@ -10,22 +10,24 @@
 			{{> pathItemHeader}}
 		</div>
 
-		<div class="map-container">
-			{{> googleMap name="exampleMap" options=exampleMapOptions}}
-		</div>
+		<div class="row">
+			<div class="half map-container">
+				{{> googleMap name="exampleMap" options=exampleMapOptions}}
+			</div>
 
-		<div class="list-item-body">
-			<div class="clearfix">
-				<ul class="list">
-					<li class="list-item">
-						<strong>Locations:</strong>
-						{{#each this.path}}
-							<div class="well markdown">
-								{{this}}
-							</div>
-						{{/each}}
-					</li>
-				</ul>
+			<div class="half list-item-body">
+				<div class="clearfix">
+					<ul class="list">
+						<li class="list-item">
+							<strong>Locations:</strong>
+							{{#each this.path}}
+								<div class="well markdown">
+									{{this}}
+								</div>
+							{{/each}}
+						</li>
+					</ul>
+				</div>
 			</div>
 		</div>
 	</div>
