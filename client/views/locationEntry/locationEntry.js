@@ -6,22 +6,27 @@ if(Meteor.isClient){
       libraries: 'places'
     });
   });
-
-  Template.locEntry.rendered = function(){
-    this.autorun(function () {
-      // Wait for API to be loaded
-      if (GoogleMaps.loaded()) {
-
-        // Example 1 - Autocomplete only
-        $('#newLocation').geocomplete({
-          map: $("#map")
-        });
-      }
-    });
-
-    $('#locations').sortable();
-  };
 }
+
+Template.locEntry.rendered = function(){
+  this.autorun(function () {
+    if (GoogleMaps.loaded()) {
+      $('#newLocation')
+              .geocomplete()
+              .bind('geocode:result', function(event, result){
+        var loc = result.geometry.location;
+
+        Session.set('latitude', loc.lat());
+        Session.set('longitude', loc.lng());
+        Session.set('locationName', this.value);
+        // Session.set('locationName', result.formatted_address);
+        // this.value = "";
+      });
+    }
+  });
+
+  $('#locations').sortable();
+};
 
 Template.locEntry.helpers({
   allLocations: function() {
@@ -41,34 +46,59 @@ Template.locEntry.events({
   */
   'keydown #newLocation': function(event, template) {
     if(event.keyCode == 13) {
-      var element = document.getElementById("newLocation");
 
-      var locObj = {};
-      var index = Locations.find().count();
-      locObj.rank = index;
-      locObj.idnum = "id" + index.toString();
-      locObj.title = element.value;
+      /*
+      Wait a small amount of time (0.5 seconds)
+        so that 'geocomplete' can finish.
 
-      Locations.insert( locObj );
+      Crude method...
+      I will replace with callbacks when I understand them.
+      */
+      setTimeout(function(){
+        var element = document.getElementById("newLocation");
+
+        // var locObj = {};
+        // var index = Locations.find().count();
+        // locObj.rank = index;
+        // locObj.idnum = "id" + index.toString();
+        // locObj.title = element.value;
+
+        var locObj = {
+          latitude: Session.get('latitude'),
+          longitude: Session.get('longitude'),
+          locationName: Session.get('locationName')
+        };
+
+        Locations.insert( locObj );
 
 
-      // alert(Locations.find().count());
-      element.value = "";
-      return false;
+        /*
+        This does not clear the element for some reason??
+        (does not work)
+        */
+        element.value = "";
+        return false;
+      }, 200);
     }
   },
   'click #submitPath': function(event, template) {
     var locs = [];
     $(".location-item").each(function() {
       var locationName = $.trim( $(this).text() );
-      locs.push(locationName);
+      var location = Locations.findOne({'locationName': locationName});
+      locs.push(location);
     });
+
     console.log(locs);
     var path = document.getElementById("newPath");
     Paths.insert({
       'path': locs,
       'name': path.value
     });
-    // Router.route('/paths');
+    
+    /*
+    Goes to /paths, but does not stay there
+    */
+    Router.go('/paths');
   }
 });
