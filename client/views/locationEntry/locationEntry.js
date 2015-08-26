@@ -53,6 +53,11 @@ Template.locEntry.events({
 
       Crude method...
       I will replace with callbacks when I understand them.
+
+      BUG: Unless you wait about 1 second,
+              the location entered is incorrect:
+                - previous submit
+                - blank (if no previous submit)
       */
       setTimeout(function(){
         var element = document.getElementById("newLocation");
@@ -71,10 +76,6 @@ Template.locEntry.events({
 
         Locations.insert( locObj );
 
-        /*
-        This does not clear the element for some reason??
-        (does not work)
-        */
         element.value = "";
         return false;
       }, 200);

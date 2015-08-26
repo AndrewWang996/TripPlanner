@@ -22,14 +22,25 @@ Template.paths.rendered = function() {
         var elementName = 'pathItemMap' + pathObj.pathName;
         var mapElement = document.getElementById(elementName);
 
-        GoogleMaps.create({
-          name: 'pathItemMap' + mapName,
-          element: mapElement,
-          options: {
-            center: new google.maps.LatLng(avgLat, avgLng),
-            zoom: 8
-          }
+        map = new google.maps.Map(mapElement, {
+          center: new google.maps.LatLng(avgLat, avgLng),
+          zoom: 7
         });
+        
+        var bounds = new google.maps.LatLngBounds();
+
+        pathObj.path.forEach(function(location){
+          var position = new google.maps.LatLng(location.latitude, location.longitude);
+          createMarker(map, position);
+          // var marker = new google.maps.Marker({
+          //   map: map.instance,
+          // position: position
+          // });
+
+          bounds.extend(position);
+        });
+
+        map.fitBounds(bounds);
       });
     }
   }, 100);
