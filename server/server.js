@@ -14,7 +14,7 @@ Meteor.startup(function () {
   var geocoder = GoogleGeoCoder(geocoderProvider, httpAdapter, extra);
   */
 
-
+     
 //  var geoCodeProvider = 'google';
 //  var httpAdapter = 'http';
 //  var extra = {
@@ -42,7 +42,7 @@ Meteor.startup(function () {
   /*
     Code causes only Paths collection to be cleared on server restart
   */
-  // Paths.remove({}); 
+  Paths.remove({}); 
 
  
   Locations.remove({});

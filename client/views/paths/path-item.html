@@ -1,6 +1,6 @@
 <template name="pathItemHeader">
 	<div class="list-item-info list-item-header clearfix">
-		<h3>{{this.name}}</h3>
+		<h3 id="pathName">{{this.pathName}}</h3>
 	</div>
 </template>
 
@@ -11,9 +11,15 @@
 		</div>
 
 		<div class="row">
-			<div class="half map-container">
-				{{> googleMap name="exampleMap" options=exampleMapOptions}}
+
+			<!-- map object to be attached w/ jQuery -->
+			<div id="pathItemMap{{this.pathName}}" name="pathItemMap{{this.pathName}}" class="half map-container">
 			</div>
+
+			<!-- Blaze Template -->
+			<!-- <div class="half map-container">
+				{{> googleMap name="exampleMap" options=exampleMapOptions}}
+			</div> -->
 
 			<div class="half list-item-body">
 				<div class="clearfix">

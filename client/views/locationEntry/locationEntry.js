@@ -71,7 +71,6 @@ Template.locEntry.events({
 
         Locations.insert( locObj );
 
-
         /*
         This does not clear the element for some reason??
         (does not work)
@@ -93,7 +92,7 @@ Template.locEntry.events({
     var path = document.getElementById("newPath");
     Paths.insert({
       'path': locs,
-      'name': path.value
+      'pathName': path.value
     });
     
     /*
