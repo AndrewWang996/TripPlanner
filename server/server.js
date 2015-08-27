@@ -1,6 +1,13 @@
  
 Meteor.startup(function () {
-
+  return Meteor.methods({
+    removeAllLocations: function(){
+      return Locations.remove({});
+    },
+    removeAllPaths: function(){
+      return Paths.remove({});
+    }
+  });
   /*
   var geocoderProvider = 'google';
   var httpAdapter = 'https';
@@ -13,7 +20,7 @@ Meteor.startup(function () {
   var GoogleGeoCoder = Meteor.npmRequire('node-geocoder');
   var geocoder = GoogleGeoCoder(geocoderProvider, httpAdapter, extra);
   */
-
+ 
      
 //  var geoCodeProvider = 'google';
 //  var httpAdapter = 'http';

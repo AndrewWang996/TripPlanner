@@ -1,9 +1,18 @@
-Template.paths.helpers({
-	paths: function() {
-		return Paths.find({}, {sort: {'info.date': -1}});
-	}
+
+Template.pathsHeader.events({
+  'click #removeAllPaths': function(event, template){
+    Meteor.call('removeAllPaths');
+  }
 });
 
+
+Template.paths.helpers({
+	paths: function() {
+		// return Paths.find({}, {sort: {'info.date': 1}});
+    return Paths.find({}, {sort: {'dateCreated': -1}});
+    // return Paths.find({}, {sort: {date: 1, time: 1}});
+  }
+});
 
 Template.paths.rendered = function() {
   setTimeout(function() {

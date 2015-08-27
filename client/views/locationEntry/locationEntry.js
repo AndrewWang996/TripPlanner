@@ -89,16 +89,16 @@ Template.locEntry.events({
       locs.push(location);
     });
 
-    console.log(locs);
+    $(".location-item").remove();
+    Meteor.call('removeAllLocations');
+
+    var currentTime = getDateTime();
     var path = document.getElementById("newPath");
+    
     Paths.insert({
       'path': locs,
-      'pathName': path.value
+      'pathName': path.value,
+      'dateCreated': currentTime
     });
-    
-    /*
-    Goes to /paths, but does not stay there
-    */
-    Router.go('/paths');
   }
 });
