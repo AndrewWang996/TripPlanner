@@ -1,12 +1,4 @@
 
-if(Meteor.isClient){
-  Meteor.startup( function(){
-    GoogleMaps.load({
-      key: 'AIzaSyCLPZ7L1MROZUEP4w-5dbKYnyIrcyM6fV4',
-      libraries: 'places'
-    });
-  });
-}
 
 Template.locEntry.rendered = function(){
   this.autorun(function () {
@@ -30,7 +22,7 @@ Template.locEntry.rendered = function(){
 
 Template.locEntry.helpers({
   allLocations: function() {
-    return Locations.find({}, {sort: {rank: 1}});
+    return Locations.find();
   }
 });
 
@@ -82,9 +74,10 @@ Template.locEntry.events({
       }, 200);
     }
   },
-  'click #submitPath': function(event, template) {
+  'click #submitPath': function() {
     if(Locations.find().count() < 2) {
       alert('Please submit at least 2 locations.');
+      Router.go('/main');
       return;
     } 
 
@@ -129,8 +122,6 @@ Template.locEntry.events({
       'dateCreated': currentTime
     });
 
-    alert("hello");
     Router.go('/paths');
-    alert("it has run");
   }
 });

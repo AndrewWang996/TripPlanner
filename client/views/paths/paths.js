@@ -51,7 +51,7 @@ Template.paths.rendered = function() {
   }, 100);
 };
 
-/*
+
 Template.pathItem.onCreated(function() {
 
   // We can use the `ready` callback to interact with the map API once the map is ready.
@@ -64,4 +64,3 @@ Template.pathItem.onCreated(function() {
     });
   });
 });
-*/

@@ -11,16 +11,15 @@
   </head>
 
   <body>
-    <form class="poll-form"> 
+    <div class="form"> 
       <div class="form-group question-group">
           <label>Path Name</label>
-          <input type="text" id="newPath" class="form-control" placeholder="Example: Europe Tour">
+          <input type="text" id="newPath" name="pathMOTHREFUCKER" class="form-control" placeholder="Example: Europe Tour">
       </div>
 
       <div class="form-group question-group">
           <label>New Location</label>
-          <input type="text" id="newLocation" name="place" class="form-control" placeholder="Example: Paris">
-          <div id="map"></div>
+          <input type="text" id="newLocation" name="placeMOTHERFUCKER" class="form-control" placeholder="Example: Paris">
       </div>
 
       <div id="locations" class="list-group ui-sortable">
@@ -31,13 +30,11 @@
         {{/each}}
       </div>
 
-      <!-- <a href="{{pathFor 'paths'}}"> -->
-        <button type="submit" id="submitPath" class="btn btn-lg btn-primary btn-block">
-          Create Path
-        </button>
-      <!-- </a> -->
+      <button id="submitPath" class="btn btn-lg btn-primary btn-block">
+        Create Path
+      </button>
 
-    </form>
+    </div>
   </body>
   
 

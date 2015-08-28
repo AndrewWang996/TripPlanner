@@ -12,9 +12,3 @@ Template.homeCarousel.helpers({
     return pictures;
   }
 });
-
-Template.home.helpers({
-  posts: function () {
-    return Posts.find({}, { sort: { 'date': -1 } });
-  }
-});
