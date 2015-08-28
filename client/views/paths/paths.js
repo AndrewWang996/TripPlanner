@@ -41,10 +41,6 @@ Template.paths.rendered = function() {
         pathObj.path.forEach(function(location){
           var position = new google.maps.LatLng(location.latitude, location.longitude);
           createMarker(map, position);
-          // var marker = new google.maps.Marker({
-          //   map: map.instance,
-          // position: position
-          // });
 
           bounds.extend(position);
         });
@@ -55,7 +51,7 @@ Template.paths.rendered = function() {
   }, 100);
 };
 
-
+/*
 Template.pathItem.onCreated(function() {
 
   // We can use the `ready` callback to interact with the map API once the map is ready.
@@ -67,34 +63,5 @@ Template.pathItem.onCreated(function() {
       map: map.instance
     });
   });
-
-  //   setTimeout(function() {
-  //   var mapObjId = this.$('.map-container').attr('id');
-  //   var mapObjName = this.$('.map-container')
-  //                       .attr('name')
-  //                       .substring("pathItemMap".length);
-
-  //   var pathName = this.$('#pathName').text();
-
-  //   var bounds = new google.maps.LatLngBounds();
-  //   alert("number 1" + bounds);
-  //   GoogleMaps.ready(mapObjName, function(map) {
-  //     console.log("hi");
-  //     var pathObj = Paths.findOne({'pathName': pathName});
-  //     pathObj.path.forEach(function(location){
-  //       var marker = new google.maps.Marker({
-  //         position: {
-  //           lat: location.latitude,
-  //           lng: location.longitude
-  //         },
-  //         map: map.instance
-  //       });
-
-  //       bounds.extend(marker.getPosition());
-  //     });
-
-  //     alert("number 2" + bounds);
-  //     map.fitBounds(bounds);
-  //   });
-  // }, 200);
 });
+*/

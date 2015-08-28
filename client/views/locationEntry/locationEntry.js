@@ -54,19 +54,13 @@ Template.locEntry.events({
       Crude method...
       I will replace with callbacks when I understand them.
 
-      BUG: Unless you wait about 1 second,
-              the location entered is incorrect:
+      BUG: Unless you wait about 2 seconds,
+              the location entered may be incorrect:
                 - previous submit
                 - blank (if no previous submit)
       */
       setTimeout(function(){
         var element = document.getElementById("newLocation");
-
-        // var locObj = {};
-        // var index = Locations.find().count();
-        // locObj.rank = index;
-        // locObj.idnum = "id" + index.toString();
-        // locObj.title = element.value;
 
         var locObj = {
           latitude: Session.get('latitude'),
@@ -76,17 +70,51 @@ Template.locEntry.events({
 
         Locations.insert( locObj );
 
+        Session.set('latitude', undefined);
+        Session.set('longitude', undefined);
+        Session.set('locationName', undefined);
+        delete Session.keys.latitude;
+        delete Session.keys.longitude;
+        delete Session.keys.locationName;
+
         element.value = "";
         return false;
       }, 200);
     }
   },
   'click #submitPath': function(event, template) {
+    if(Locations.find().count() < 2) {
+      alert('Please submit at least 2 locations.');
+      return;
+    } 
+
     var locs = [];
+    var distanceMatrixPoints = [];
     $(".location-item").each(function() {
       var locationName = $.trim( $(this).text() );
       var location = Locations.findOne({'locationName': locationName});
       locs.push(location);
+      distanceMatrixPoints.push({
+        lat: location.latitude,
+        lng: location.longitude
+      })
+    });
+
+    var service = new google.maps.DistanceMatrixService;
+    service.getDistanceMatrix({
+      origins: distanceMatrixPoints,
+      destinations: distanceMatrixPoints,
+      travelMode: google.maps.TravelMode.DRIVING,
+      unitSystem: google.maps.UnitSystem.METRIC,
+      avoidHighways: false,
+      avoidTolls: false
+    }, function(response, status) {
+      if (status !== google.maps.DistanceMatrixStatus.OK) {
+        alert('Error was: ' + status);
+      } 
+      else { 
+        console.log(response);
+      }
     });
 
     $(".location-item").remove();
@@ -100,5 +128,9 @@ Template.locEntry.events({
       'pathName': path.value,
       'dateCreated': currentTime
     });
+
+    alert("hello");
+    Router.go('/paths');
+    alert("it has run");
   }
 });
