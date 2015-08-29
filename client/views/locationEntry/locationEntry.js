@@ -148,15 +148,10 @@ Template.locEntry.events({
             console.assert(visitedIndices.length >= 1);
 
             var minDistance = map[keyString];
-            var visitedIndex2 = 0;
             for(var locIndex = 0; locIndex < numLocs; locIndex++) {
-              while(visitedIndex2 < visitedIndices.length 
-                 && visitedIndices[visitedIndex2] < locIndex) {
-                visitedIndex2 ++;
-              }
-              
-              /* They are equal */
-              if(visitedIndices[visitedIndex2] === locIndex) {
+
+              /* locIndex already visited */
+              if(visitedIndices.indexOf(locIndex) >= 0) {
                 continue;
               }
 
@@ -164,7 +159,7 @@ Template.locEntry.events({
               var newEnd = locIndex;
 
               var newVisitedIndices = visitedIndices.slice();
-              newVisitedIndices.splice(visitedIndex2, 0, newEnd);
+              newVisitedIndices.push(newEnd);
               
               var newDatum = [newStart, newEnd].concat(newVisitedIndices);
               var newDistance = minDistance + dist[end][newEnd];
