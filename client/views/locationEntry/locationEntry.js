@@ -75,11 +75,11 @@ Template.locEntry.events({
     }
   },
   'click #submitPath': function() {
-    if(Locations.find().count() < 2) {
+    var numLocs = Locations.find().count();
+    if(numLocs < 2) {
       alert('Please submit at least 2 locations.');
-      Router.go('/main');
       return;
-    } 
+    }
 
     var locs = [];
     var distanceMatrixPoints = [];
@@ -105,9 +105,84 @@ Template.locEntry.events({
       if (status !== google.maps.DistanceMatrixStatus.OK) {
         alert('Error was: ' + status);
       } 
-      else { 
-        console.log(response);
+      else {
+        var dist = [];
+        var time = [];
+        for(var i=0; i<numLocs; i++) {
+          dist.push([]);
+          time.push([]);
+        }
+        for(var i=0; i<numLocs; i++) {
+          for(var j=0; j<numLocs; j++){
+            dist[i][j] = response.rows[i].elements[j].distance.value;
+            time[i][j] = response.rows[i].elements[j].duration.value;
+          }
+        }
+
+        /*
+        generate the "essential data" as:
+        map[ [start, end] + [visitedIndices] ]
+          = minDistance;
+
+        Assume that we begin at location 0
+        */
+        var map = {};
+        map[ "0,0,0" ] = 0;
+
+        for(var numVisited = 1; numVisited < numLocs; numVisited++) {
+          var newMap = {};
+
+          for(var keyString in map) {
+            if( ! map.hasOwnProperty(keyString) ) {
+              continue;
+            }
+            var key = keyString.split(",").map(function(currentValue) {
+              return parseInt(currentValue);
+            });
+            console.assert(key.length >= 3);
+
+            var start = key[0];
+            var end = key[1];
+            var visitedIndices = key.slice(2);
+
+            console.assert(visitedIndices.length >= 1);
+
+            var minDistance = map[keyString];
+            var visitedIndex2 = 0;
+            for(var locIndex = 0; locIndex < numLocs; locIndex++) {
+              while(visitedIndex2 < visitedIndices.length 
+                 && visitedIndices[visitedIndex2] < locIndex) {
+                visitedIndex2 ++;
+              }
+              
+              /* They are equal */
+              if(visitedIndices[visitedIndex2] === locIndex) {
+                continue;
+              }
+
+              var newStart = start;
+              var newEnd = locIndex;
+
+              var newVisitedIndices = visitedIndices.slice();
+              newVisitedIndices.splice(visitedIndex2, 0, newEnd);
+              
+              var newDatum = [newStart, newEnd].concat(newVisitedIndices);
+              var newDistance = minDistance + dist[end][newEnd];
+
+              if( newMap[newDatum] === undefined ) {
+                newMap[newDatum] = newDistance;
+              } else if( newDistance < newMap[newDatum] ) {
+                newMap[newDatum] = newDistance;
+              }
+            }
+          }
+
+          map = newMap;
+        }
+
       }
+
+      console.log(map);
     });
 
     $(".location-item").remove();
