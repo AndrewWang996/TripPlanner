@@ -74,6 +74,11 @@ Template.locEntry.events({
       }, 200);
     }
   },
+  'click #deleteLocation': function() {
+    Locations.remove({
+      _id: Locations.findOne({locationName: this.locationName})._id
+    });
+  },
   'click #submitPath': function() {
     var numLocs = Locations.find().count();
     if(numLocs < 2) {
@@ -93,131 +98,143 @@ Template.locEntry.events({
       })
     });
 
-    var pathOrder = null;
+    // var pathOrder = null;
 
-    var service = new google.maps.DistanceMatrixService;
-    service.getDistanceMatrix({
-      origins: distanceMatrixPoints,
-      destinations: distanceMatrixPoints,
-      travelMode: google.maps.TravelMode.DRIVING,
-      unitSystem: google.maps.UnitSystem.METRIC,
-      avoidHighways: false,
-      avoidTolls: false
-    }, function(response, status) {
-      if (status !== google.maps.DistanceMatrixStatus.OK) {
-        alert('Error was: ' + status);
-      } 
-      else {
-        var dist = [];
-        var time = [];
-        for(var i=0; i<numLocs; i++) {
-          dist.push([]);
-          time.push([]);
-        }
-        for(var i=0; i<numLocs; i++) {
-          for(var j=0; j<numLocs; j++){
-            dist[i][j] = response.rows[i].elements[j].distance.value;
-            time[i][j] = response.rows[i].elements[j].duration.value;
-          }
-        }
+    // var service = new google.maps.DistanceMatrixService;
+    // service.getDistanceMatrix({
+    //   origins: distanceMatrixPoints,
+    //   destinations: distanceMatrixPoints,
+    //   travelMode: google.maps.TravelMode.DRIVING,
+    //   unitSystem: google.maps.UnitSystem.METRIC,
+    //   avoidHighways: false,
+    //   avoidTolls: false
+    // }, function(response, status) {
+    //   if (status !== google.maps.DistanceMatrixStatus.OK) {
+    //     alert('Error was: ' + status);
+    //   } 
+    //   else {
+    //     var dist = [];
+    //     var time = [];
+    //     for(var i=0; i<numLocs; i++) {
+    //       dist.push([]);
+    //       time.push([]);
+    //     }
+    //     for(var i=0; i<numLocs; i++) {
+    //       for(var j=0; j<numLocs; j++){
+    //         dist[i][j] = response.rows[i].elements[j].distance.value;
+    //         time[i][j] = response.rows[i].elements[j].duration.value;
+    //       }
+    //     }
 
-        /*
-        generate the "essential data" as:
-        map[ [start, end] + [visitedIndices] ]
-          = minDistance;
+    //     /*
+    //     generate the "essential data" as:
+    //     map[ [start, end] + [visitedIndices] ]
+    //       = minDistance;
 
-        Assume that we begin at location 0
-        */
-        var map = {};
-        map[ "0,0,0" ] = 0;
+    //     Assume that we begin at location 0
+    //     */
+    //     var map = {};
+    //     map[ "0,0,0" ] = 0;
 
-        for(var numVisited = 1; numVisited < numLocs; numVisited++) {
-          var newMap = {};
+    //     for(var numVisited = 1; numVisited < numLocs; numVisited++) {
+    //       var newMap = {};
 
-          for(var keyString in map) {
-            if( ! map.hasOwnProperty(keyString) ) {
-              continue;
-            }
-            var key = keyString.split(",").map(function(currentValue) {
-              return parseInt(currentValue);
-            });
-            console.assert(key.length >= 3);
+    //       for(var keyString in map) {
+    //         if( ! map.hasOwnProperty(keyString) ) {
+    //           continue;
+    //         }
+    //         var key = keyString.split(",").map(function(currentValue) {
+    //           return parseInt(currentValue);
+    //         });
+    //         console.assert(key.length >= 3);
 
-            var start = key[0];
-            var end = key[1];
-            var visitedIndices = key.slice(2);
+    //         var start = key[0];
+    //         var end = key[1];
+    //         var visitedIndices = key.slice(2);
 
-            console.assert(visitedIndices.length >= 1);
+    //         console.assert(visitedIndices.length >= 1);
 
-            var minDistance = map[keyString];
-            for(var locIndex = 0; locIndex < numLocs; locIndex++) {
+    //         var minDistance = map[keyString];
+    //         for(var locIndex = 0; locIndex < numLocs; locIndex++) {
 
-              /* locIndex already visited */
-              if(visitedIndices.indexOf(locIndex) >= 0) {
-                continue;
-              }
+    //            locIndex already visited 
+    //           if(visitedIndices.indexOf(locIndex) >= 0) {
+    //             continue;
+    //           }
 
-              var newStart = start;
-              var newEnd = locIndex;
+    //           var newStart = start;
+    //           var newEnd = locIndex;
 
-              var newVisitedIndices = visitedIndices.slice();
-              newVisitedIndices.push(newEnd);
+    //           var newVisitedIndices = visitedIndices.slice();
+    //           newVisitedIndices.push(newEnd);
               
-              var newDatum = [newStart, newEnd].concat(newVisitedIndices);
-              var newMinDistance = minDistance + dist[end][newEnd];
+    //           var newDatum = [newStart, newEnd].concat(newVisitedIndices);
+    //           var newMinDistance = minDistance + dist[end][newEnd];
 
-              if( newMap[newDatum] === undefined ) {
-                newMap[newDatum] = newMinDistance;
-              } else if( newDistance < newMap[newDatum] ) {
-                newMap[newDatum] = newMinDistance;
-              }
-            }
-          }
+    //           if( newMap[newDatum] === undefined ) {
+    //             newMap[newDatum] = newMinDistance;
+    //           } else if( newDistance < newMap[newDatum] ) {
+    //             newMap[newDatum] = newMinDistance;
+    //           }
+    //         }
+    //       }
 
-          map = newMap;
-        }
-      }
+    //       map = newMap;
+    //     }
+    //   }
 
 
-      /* Determine which of the routes in the map is the fastest */
-      var LkeyString = null;
-      var LminDistance = null;
+    //   /* Determine which of the routes in the map is the fastest */
+    //   var LkeyString = null;
+    //   var LminDistance = null;
 
-      for(var keyString in map) {
-        if( ! map.hasOwnProperty(keyString) ) {
-          continue;
-        }
-        if(LkeyString === null) {
-          LkeyString = keyString;
-          LminDistance = map[keyString];
-        } else if(map[keyString] < LminDistance){
-          LminDistance = map[keyString];
-          LkeyString = keyString;
-        }
-      }
+    //   for(var keyString in map) {
+    //     if( ! map.hasOwnProperty(keyString) ) {
+    //       continue;
+    //     }
+    //     if(LkeyString === null) {
+    //       LkeyString = keyString;
+    //       LminDistance = map[keyString];
+    //     } else if(map[keyString] < LminDistance){
+    //       LminDistance = map[keyString];
+    //       LkeyString = keyString;
+    //     }
+    //   }
 
-      var keyData = LkeyString.split(",").map(function(currentValue) {
-        return parseInt(currentValue);
-      });
+    //   var keyData = LkeyString.split(",").map(function(currentValue) {
+    //     return parseInt(currentValue);
+    //   });
 
-      // pathOrder was defined earlier, before the distanceMatrix calculations
-      pathOrder = keyData.slice(2);
+    //   // pathOrder was defined earlier, before the distanceMatrix calculations
+    //   pathOrder = keyData.slice(2);
 
-      var currentTime = getDateTime();
-      var path = document.getElementById("newPath");
+    //   var currentTime = getDateTime();
+    //   var path = document.getElementById("newPath");
 
-      Paths.insert({
-        'path': locs,
-        'pathName': path.value,
-        'pathOrder': pathOrder,
-        'dateCreated': currentTime
-      });
+    //   Paths.insert({
+    //     'path': locs,
+    //     'pathName': path.value,
+    //     'pathOrder': pathOrder,
+    //     'dateCreated': currentTime
+    //   });
 
-      $(".location-item").remove();
+    //   $(".location-item").remove();
 
-      Router.go('/paths');
+    //   Router.go('/paths');
+    // });
+
+    var currentTime = getDateTime();
+    var path = document.getElementById("newPath");
+
+    Paths.insert({
+      'path': locs,
+      'pathName': path.value,
+      'dateCreated': currentTime
     });
 
+    $(".location-item").remove();
+
+    Router.go('/paths');
     Meteor.call('removeAllLocations');
   }
 });

@@ -6,6 +6,9 @@ Meteor.startup(function () {
     },
     removeAllPaths: function(){
       return Paths.remove({});
+    },
+    removePath: function(id){
+      return Paths.remove({_id: id});
     }
   }); 
 

@@ -2,6 +2,23 @@
 	<div class="list-item-info list-item-header clearfix">
 		<h3 id="pathName">{{this.pathName}}</h3>
 	</div>
+
+	<!-- Dropdown Menu -->
+	<div class="list-item-action dropdown inline">
+    <button class="btn btn-default" data-toggle="dropdown" href="#">
+	  	<i class="fa fa-bars"></i>
+    </button>
+
+    <!-- Delete + Edit buttons (NOT SURE HOW THEY WORK) -->
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+      <li role="presentation">
+        <a class="js-delete-path" role="menuitem" tabindex="-1" href="#">Delete</a>
+      </li>
+      <li role="presentation">
+        <a class="js-toggle-modal" data-toggle="editEventModal" role="menuitem" tabindex="-1" href="#">Edit</a>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <template name="pathItem">
@@ -16,10 +33,7 @@
 			<div id="pathItemMap{{this.pathName}}" name="pathItemMap{{this.pathName}}" class="half map-container">
 			</div>
 
-			<!-- Blaze Template -->
-			<!-- <div class="half map-container">
-				{{> googleMap name="exampleMap" options=exampleMapOptions}}
-			</div> -->
+
 
 			<div class="half list-item-body">
 				<div class="clearfix">

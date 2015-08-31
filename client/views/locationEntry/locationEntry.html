@@ -20,12 +20,14 @@
       <div class="form-group question-group">
           <label>New Location</label>
           <input type="text" id="newLocation" name="placeMOTHERFUCKER" class="form-control" placeholder="Example: Paris">
+          <!-- <span class="glyphicon glyphicon-plus pull-right"></span> -->
       </div>
 
       <div id="locations" class="list-group ui-sortable">
         {{#each allLocations}}
           <div id="{{idnum}}" class="location-item list-group-item ui-sortable-handle">
             {{locationName}}
+            <span id="deleteLocation" class="glyphicon glyphicon-remove-circle pull-right"></span>
           </div>
         {{/each}}
       </div>

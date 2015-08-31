@@ -5,6 +5,16 @@ Template.pathsHeader.events({
   }
 });
 
+Template.pathItemHeader.events({
+  'click .js-delete-path': function(event, template) {
+    // if (confirm(getError('confirm-remove-path'))) {
+      Meteor.call('removePath', this._id, function (error) {
+        if (error)
+          alert(error.reason)
+      });
+    // }
+  }
+});
 
 Template.paths.helpers({
 	paths: function() {
@@ -15,7 +25,8 @@ Template.paths.helpers({
 });
 
 Template.paths.rendered = function() {
-  setTimeout(function() {
+  // setTimeout(function() {
+  Tracker.autorun(function() {
     if(GoogleMaps.loaded()) {
       Paths.find().forEach(function(pathObj) {
 
@@ -63,21 +74,6 @@ Template.paths.rendered = function() {
         var directionsDisplay = new google.maps.DirectionsRenderer;
         directionsDisplay.setMap(map);
 
-        function calculateAndDisplayRoute(start, wayPts, end) {
-          directionsService.route({
-            origin: start,
-            destination: end,
-            waypoints: wayPts,
-            optimizeWaypoints: true,
-            travelMode: google.maps.TravelMode.DRIVING
-          }, function(response, status) {
-            if (status === google.maps.DirectionsStatus.OK) {
-              directionsDisplay.setDirections(response);
-            } else {
-              window.alert('Directions request failed due to ' + status);
-            }
-          });
-        }
         var LatLngStart = new google.maps.LatLng(
           pathObj.path[0].latitude,
           pathObj.path[0].longitude
@@ -96,15 +92,29 @@ Template.paths.rendered = function() {
             stopover: true
           });
         }
-        console.log(LatLngStart);
-        console.log(LatLngEnd);
-        console.log(wayPoints);
+
+        function calculateAndDisplayRoute(start, wayPts, end) {
+          directionsService.route({
+            origin: start,
+            destination: end,
+            waypoints: wayPts,
+            optimizeWaypoints: true,
+            travelMode: google.maps.TravelMode.DRIVING
+          }, function(response, status) {
+            if (status === google.maps.DirectionsStatus.OK) {
+              directionsDisplay.setDirections(response);
+            } else {
+              window.alert('Directions request failed due to ' + status);
+            }
+          });
+        }
 
         calculateAndDisplayRoute(LatLngStart, wayPoints, LatLngEnd);
       
       });
     }
-  }, 100);
+  });
+  // }, 100);
 };
 
 
