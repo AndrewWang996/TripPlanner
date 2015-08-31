@@ -18,6 +18,12 @@ Template.paths.rendered = function() {
   setTimeout(function() {
     if(GoogleMaps.loaded()) {
       Paths.find().forEach(function(pathObj) {
+
+        var pathLength = pathObj.path.length;
+
+        /*
+        Calculate marker locations (should be sync code)
+        */
         var sumLat = 0;
         var sumLng = 0;
         pathObj.path.forEach(function(location){
@@ -31,6 +37,9 @@ Template.paths.rendered = function() {
         var elementName = 'pathItemMap' + pathObj.pathName;
         var mapElement = document.getElementById(elementName);
 
+        /*
+        Place markers (maybe async?)
+        */
         map = new google.maps.Map(mapElement, {
           center: new google.maps.LatLng(avgLat, avgLng),
           zoom: 7
@@ -46,6 +55,53 @@ Template.paths.rendered = function() {
         });
 
         map.fitBounds(bounds);
+
+        /*
+        Calculate and show directions (async code)
+        */
+        var directionsService = new google.maps.DirectionsService;
+        var directionsDisplay = new google.maps.DirectionsRenderer;
+        directionsDisplay.setMap(map);
+
+        function calculateAndDisplayRoute(start, wayPts, end) {
+          directionsService.route({
+            origin: start,
+            destination: end,
+            waypoints: wayPts,
+            optimizeWaypoints: true,
+            travelMode: google.maps.TravelMode.DRIVING
+          }, function(response, status) {
+            if (status === google.maps.DirectionsStatus.OK) {
+              directionsDisplay.setDirections(response);
+            } else {
+              window.alert('Directions request failed due to ' + status);
+            }
+          });
+        }
+        var LatLngStart = new google.maps.LatLng(
+          pathObj.path[0].latitude,
+          pathObj.path[0].longitude
+        );
+        var LatLngEnd = new google.maps.LatLng(
+          pathObj.path[pathLength - 1].latitude,
+          pathObj.path[pathLength - 1].longitude
+        );
+        var wayPoints = [];
+        for(var i=1; i < pathLength - 1; i++){
+          wayPoints.push({
+            location: new google.maps.LatLng(
+              pathObj.path[i].latitude,
+              pathObj.path[i].longitude
+            ), 
+            stopover: true
+          });
+        }
+        console.log(LatLngStart);
+        console.log(LatLngEnd);
+        console.log(wayPoints);
+
+        calculateAndDisplayRoute(LatLngStart, wayPoints, LatLngEnd);
+      
       });
     }
   }, 100);
@@ -55,12 +111,12 @@ Template.paths.rendered = function() {
 Template.pathItem.onCreated(function() {
 
   // We can use the `ready` callback to interact with the map API once the map is ready.
-  GoogleMaps.ready('pathItemMapEurope Tour', function(map) {
+  // GoogleMaps.ready('pathItemMapEurope Tour', function(map) {
 
-    // Add a marker to the map once it's ready
-    var marker = new google.maps.Marker({
-      position: map.options.center,
-      map: map.instance
-    });
-  });
+  //   // Add a marker to the map once it's ready
+  //   var marker = new google.maps.Marker({
+  //     position: map.options.center,
+  //     map: map.instance
+  //   });
+  // });
 });

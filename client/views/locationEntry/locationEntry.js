@@ -93,6 +93,8 @@ Template.locEntry.events({
       })
     });
 
+    var pathOrder = null;
+
     var service = new google.maps.DistanceMatrixService;
     service.getDistanceMatrix({
       origins: distanceMatrixPoints,
@@ -178,9 +180,9 @@ Template.locEntry.events({
 
 
       /* Determine which of the routes in the map is the fastest */
-      console.log(map);
       var LkeyString = null;
       var LminDistance = null;
+
       for(var keyString in map) {
         if( ! map.hasOwnProperty(keyString) ) {
           continue;
@@ -192,26 +194,30 @@ Template.locEntry.events({
           LminDistance = map[keyString];
           LkeyString = keyString;
         }
+      }
+
+      var keyData = LkeyString.split(",").map(function(currentValue) {
+        return parseInt(currentValue);
+      });
+
+      // pathOrder was defined earlier, before the distanceMatrix calculations
+      pathOrder = keyData.slice(2);
+
+      var currentTime = getDateTime();
+      var path = document.getElementById("newPath");
+
+      Paths.insert({
+        'path': locs,
+        'pathName': path.value,
+        'pathOrder': pathOrder,
+        'dateCreated': currentTime
+      });
+
+      $(".location-item").remove();
+
+      Router.go('/paths');
     });
 
-    var keyData = LkeyString.split(",").map(function(currentValue) {
-      return parseInt(currentValue);
-    });
-    var pathOrder = key.slice(2);
-
-    $(".location-item").remove();
     Meteor.call('removeAllLocations');
-
-    var currentTime = getDateTime();
-    var path = document.getElementById("newPath");
-    
-    Paths.insert({
-      'path': locs,
-      'pathName': path.value,
-      'pathOrder': pathOrder,
-      'dateCreated': currentTime
-    });
-
-    Router.go('/paths');
   }
 });
