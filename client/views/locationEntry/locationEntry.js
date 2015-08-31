@@ -162,23 +162,42 @@ Template.locEntry.events({
               newVisitedIndices.push(newEnd);
               
               var newDatum = [newStart, newEnd].concat(newVisitedIndices);
-              var newDistance = minDistance + dist[end][newEnd];
+              var newMinDistance = minDistance + dist[end][newEnd];
 
               if( newMap[newDatum] === undefined ) {
-                newMap[newDatum] = newDistance;
+                newMap[newDatum] = newMinDistance;
               } else if( newDistance < newMap[newDatum] ) {
-                newMap[newDatum] = newDistance;
+                newMap[newDatum] = newMinDistance;
               }
             }
           }
 
           map = newMap;
         }
-
       }
 
+
+      /* Determine which of the routes in the map is the fastest */
       console.log(map);
+      var LkeyString = null;
+      var LminDistance = null;
+      for(var keyString in map) {
+        if( ! map.hasOwnProperty(keyString) ) {
+          continue;
+        }
+        if(LkeyString === null) {
+          LkeyString = keyString;
+          LminDistance = map[keyString];
+        } else if(map[keyString] < LminDistance){
+          LminDistance = map[keyString];
+          LkeyString = keyString;
+        }
     });
+
+    var keyData = LkeyString.split(",").map(function(currentValue) {
+      return parseInt(currentValue);
+    });
+    var pathOrder = key.slice(2);
 
     $(".location-item").remove();
     Meteor.call('removeAllLocations');
@@ -189,6 +208,7 @@ Template.locEntry.events({
     Paths.insert({
       'path': locs,
       'pathName': path.value,
+      'pathOrder': pathOrder,
       'dateCreated': currentTime
     });
 
