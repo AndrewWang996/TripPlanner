@@ -6,13 +6,15 @@ Template.locEntry.rendered = function(){
       $('#newLocation')
               .geocomplete()
               .bind('geocode:result', function(event, result){
-        var loc = result.geometry.location;
-
-        Session.set('latitude', loc.lat());
-        Session.set('longitude', loc.lng());
-        Session.set('locationName', this.value);
-        // Session.set('locationName', result.formatted_address);
-        // this.value = "";
+        if(result) {
+          var loc = result.geometry.location;
+          console.log(loc.lat(), loc.lng(), this.value);
+          Session.set('latitude', loc.lat());
+          Session.set('longitude', loc.lng());
+          Session.set('locationName', this.value);
+          // Session.set('locationName', result.formatted_address);
+          // this.value = "";
+        } 
       });
     }
   });
@@ -36,7 +38,7 @@ Template.locEntry.events({
   although changing the Locations collection after submitting seems
   to be better choice than manipulating collection during sorting.
   */
-  'keydown #newLocation': function(event, template) {
+  'keyup #newLocation': function(event, template) {
     if(event.keyCode == 13) {
 
       /*
@@ -51,7 +53,7 @@ Template.locEntry.events({
                 - previous submit
                 - blank (if no previous submit)
       */
-      setTimeout(function(){
+      if(Session.get('latitude') !== undefined) {
         var element = document.getElementById("newLocation");
 
         var locObj = {
@@ -71,7 +73,7 @@ Template.locEntry.events({
 
         element.value = "";
         return false;
-      }, 200);
+      }
     }
   },
   'click #deleteLocation': function() {
@@ -87,16 +89,47 @@ Template.locEntry.events({
     }
 
     var locs = [];
-    var distanceMatrixPoints = [];
+    var points = [];
     $(".location-item").each(function() {
       var locationName = $.trim( $(this).text() );
       var location = Locations.findOne({'locationName': locationName});
       locs.push(location);
-      distanceMatrixPoints.push({
-        lat: location.latitude,
-        lng: location.longitude
-      })
+      points.push(new google.maps.LatLng(
+        location.latitude,
+        location.longitude
+      ));
     });
+
+    var directionsService = new google.maps.DirectionsService;
+
+    function calculateRoute(start, wayPts, end) {
+      directionsService.route({
+        origin: start,
+        destination: end,
+        waypoints: wayPts,
+        optimizeWaypoints: true,
+        travelMode: google.maps.TravelMode.DRIVING
+      }, function(response, status) {
+        if (status === google.maps.DirectionsStatus.OK) {
+          directionsDisplay.setDirections(response);
+        } else {
+          window.alert('Directions request failed due to ' + status);
+        }
+      });
+    }
+
+    for(var i=0; i<numLocs; i++) {
+      for(var j=i+1; j<numLocs; j++) {
+        var wayPoints = [];
+        for(var k=0; k<numLocs; k++) {
+          if(k !== i && k !== j) {
+            wayPoints.push(points[k]);
+          }
+        }
+        calculateRoute(points[i], wayPoints, points[j]);
+      }
+    }
+
 
     // var pathOrder = null;
 
