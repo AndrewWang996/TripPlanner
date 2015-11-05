@@ -1,25 +1,24 @@
 
 
 Template.locEntry.rendered = function(){
-  this.autorun(function () {
-    if (GoogleMaps.loaded()) {
-      $('#newLocation')
-              .geocomplete()
-              .bind('geocode:result', function(event, result){
-        if(result) {
-          var loc = result.geometry.location;
-          console.log(loc.lat(), loc.lng(), this.value);
-          Session.set('latitude', loc.lat());
-          Session.set('longitude', loc.lng());
-          Session.set('locationName', this.value);
-          // Session.set('locationName', result.formatted_address);
-          // this.value = "";
-        } 
-      });
-    }
-  });
-
-  $('#locations').sortable();
+    this.autorun(function () {
+        if (GoogleMaps.loaded()) {
+            $('#newLocation')
+                .geocomplete()
+                .bind('geocode:result', function(event, result){
+                    if(result) {
+                        var loc = result.geometry.location;
+                        // console.log(loc.lat(), loc.lng(), this.value);
+                        Session.set('latitude', loc.lat());
+                        Session.set('longitude', loc.lng());
+                        Session.set('locationName', this.value);
+                        // Session.set('locationName', result.formatted_address);
+                        // this.value = "";
+                    } 
+                });
+        }
+    });
+    $('#locations').sortable();
 };
 
 Template.locEntry.helpers({
@@ -31,15 +30,15 @@ Template.locEntry.helpers({
 
 Template.locEntry.events({
 
-  /*
-  Determines what happens after form data / Path is submitted.
-  Needs serious fixing.
-  Internet seems to indicate that ranking system is necessary,
-  although changing the Locations collection after submitting seems
-  to be better choice than manipulating collection during sorting.
-  */
-  'keyup #newLocation': function(event, template) {
-    if(event.keyCode == 13) {
+    /*
+      Determines what happens after form data / Path is submitted.
+      Needs serious fixing.
+      Internet seems to indicate that ranking system is necessary,
+      although changing the Locations collection after submitting seems
+      to be better choice than manipulating collection during sorting.
+    */
+    'keyup #newLocation': function(event, template) {
+        if(event.keyCode == 13) {
 
       /*
       Wait a small amount of time (0.5 seconds)
@@ -53,82 +52,87 @@ Template.locEntry.events({
                 - previous submit
                 - blank (if no previous submit)
       */
-      if(Session.get('latitude') !== undefined) {
-        var element = document.getElementById("newLocation");
+            if(Session.get('latitude') !== undefined) {
+                var element = document.getElementById("newLocation");
 
-        var locObj = {
-          latitude: Session.get('latitude'),
-          longitude: Session.get('longitude'),
-          locationName: Session.get('locationName')
-        };
+                var locObj = {
+                    latitude: Session.get('latitude'),
+                    longitude: Session.get('longitude'),
+                    locationName: Session.get('locationName')
+                };
 
-        Locations.insert( locObj );
+                Locations.insert( locObj );
 
-        Session.set('latitude', undefined);
-        Session.set('longitude', undefined);
-        Session.set('locationName', undefined);
-        delete Session.keys.latitude;
-        delete Session.keys.longitude;
-        delete Session.keys.locationName;
+                Session.set('latitude', undefined);
+                Session.set('longitude', undefined);
+                Session.set('locationName', undefined);
+                delete Session.keys.latitude;
+                delete Session.keys.longitude;
+                delete Session.keys.locationName;
 
-        element.value = "";
-        return false;
-      }
-    }
-  },
-  'click #deleteLocation': function() {
-    Locations.remove({
-      _id: Locations.findOne({locationName: this.locationName})._id
+                element.value = "";
+                return false;
+            }
+        }
+    },
+
+    'click #deleteLocation': function() {
+        Locations.remove({
+            _id: Locations.findOne({locationName: this.locationName})._id
+        });
+    },
+
+    'click #submitPath': function() {
+        var numLocs = Locations.find().count();
+        if(numLocs < 2) {
+            alert('Please submit at least 2 locations.');
+            return;
+        }
+
+        var locs = [];
+        var points = [];
+        $(".location-item").each(function() {
+        var locationName = $.trim( $(this).text() );
+        var location = Locations.findOne({'locationName': locationName});
+        locs.push(location);
+        points.push(new google.maps.LatLng(
+            location.latitude,
+            location.longitude
+        ));
     });
-  },
-  'click #submitPath': function() {
-    var numLocs = Locations.find().count();
-    if(numLocs < 2) {
-      alert('Please submit at least 2 locations.');
-      return;
-    }
 
-    var locs = [];
-    var points = [];
-    $(".location-item").each(function() {
-      var locationName = $.trim( $(this).text() );
-      var location = Locations.findOne({'locationName': locationName});
-      locs.push(location);
-      points.push(new google.maps.LatLng(
-        location.latitude,
-        location.longitude
-      ));
-    });
 
+    /*
     var directionsService = new google.maps.DirectionsService;
 
     function calculateRoute(start, wayPts, end) {
-      directionsService.route({
-        origin: start,
-        destination: end,
-        waypoints: wayPts,
-        optimizeWaypoints: true,
-        travelMode: google.maps.TravelMode.DRIVING
-      }, function(response, status) {
-        if (status === google.maps.DirectionsStatus.OK) {
-          directionsDisplay.setDirections(response);
-        } else {
-          window.alert('Directions request failed due to ' + status);
-        }
-      });
+        directionsService.route({
+            origin: start,
+            destination: end,
+            waypoints: wayPts,
+            optimizeWaypoints: true,
+            travelMode: google.maps.TravelMode.DRIVING
+        }, function(response, status) {
+            if (status === google.maps.DirectionsStatus.OK) {
+                directionsDisplay.setDirections(response);
+            } else {
+                window.alert('Directions request failed due to ' + status);
+            }
+        });
     }
 
     for(var i=0; i<numLocs; i++) {
-      for(var j=i+1; j<numLocs; j++) {
-        var wayPoints = [];
-        for(var k=0; k<numLocs; k++) {
-          if(k !== i && k !== j) {
-            wayPoints.push(points[k]);
-          }
+        for(var j=i+1; j<numLocs; j++) {
+            var wayPoints = [];
+            for(var k=0; k<numLocs; k++) {
+                if(k !== i && k !== j) {
+                    wayPoints.push(points[k]);
+                }
+            }
+            calculateRoute(points[i], wayPoints, points[j]);
         }
-        calculateRoute(points[i], wayPoints, points[j]);
-      }
     }
+    */
 
 
     // var pathOrder = null;
@@ -256,18 +260,18 @@ Template.locEntry.events({
     //   Router.go('/paths');
     // });
 
-    var currentTime = getDateTime();
-    var path = document.getElementById("newPath");
+        var currentTime = getDateTime();
+        var path = document.getElementById("newPath");
 
-    Paths.insert({
-      'path': locs,
-      'pathName': path.value,
-      'dateCreated': currentTime
-    });
+        Paths.insert({
+            'path': locs,
+            'pathName': path.value,
+            'dateCreated': currentTime
+        });
 
-    $(".location-item").remove();
-
-    Router.go('/paths');
-    Meteor.call('removeAllLocations');
-  }
+        $(".location-item").remove();
+ 
+        Router.go('/paths');
+        Meteor.call('removeAllLocations');
+    }
 });

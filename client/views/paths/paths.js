@@ -30,67 +30,88 @@ Template.paths.rendered = function() {
         if(GoogleMaps.loaded() && Paths.find().count() > 0) {
             Paths.find().forEach(function(pathObj) {
 
-            var pathLength = pathObj.path.length;
+                var path = pathObj.path;
 
-            /*
-            Calculate marker locations (should be sync code)
-            */
-            var sumLat = 0;
-            var sumLng = 0;
-            pathObj.path.forEach(function(location){
-                sumLat += location.latitude;
-                sumLng += location.longitude;
-            });
-            var avgLat = sumLat / pathObj.path.length;
-            var avgLng = sumLng / pathObj.path.length;
+                var pathLength = path.length;
 
-            var mapName = 'pathItemMap' + pathObj.pathName;
-            var elementName = 'pathItemMap' + pathObj.pathName;
-            var mapElement = document.getElementById(elementName);
+                /*
+                Calculate marker locations (should be sync code)
+                */
+                var sumLat = 0;
+                var sumLng = 0;
+                pathObj.path.forEach(function(location){
+                    sumLat += location.latitude;
+                    sumLng += location.longitude;
+                });
+                var avgLat = sumLat / path.length;
+                var avgLng = sumLng / path.length;
+                var pathCenter = new google.maps.LatLng(
+                    avgLat, avgLng
+                );
+                // var pathCenter = calculateCenter(pathObj);
 
-            /*
-            Place markers (maybe async?)
-            */
-            map = new google.maps.Map(mapElement, {
-                center: new google.maps.LatLng(avgLat, avgLng),
-                zoom: 7
-            });
-            
-            var bounds = new google.maps.LatLngBounds();
+                var mapName = 'pathItemMap' + pathObj.pathName;
+                var elementName = 'pathItemMap' + pathObj.pathName;
+                var mapElement = document.getElementById(elementName);
 
-            pathObj.path.forEach(function(location){
-                var position = new google.maps.LatLng(location.latitude, location.longitude);
-                createMarker(map, position);
+                /*
+                Place markers (maybe async?)
+                */
+                map = new google.maps.Map(mapElement, {
+                    center: pathCenter,
+                    zoom: 7
+                });
+                
+                var bounds = new google.maps.LatLngBounds();
 
-                bounds.extend(position);
-            });
+                pathObj.path.forEach(function(location){
+                    var position = new google.maps.LatLng(location.latitude, location.longitude);
+                    createMarker(map, position);
 
-            map.fitBounds(bounds);
+                    bounds.extend(position);
+                });
 
-            /*
-            Calculate and show directions (async code)
-            */
-            var directionsService = new google.maps.DirectionsService;
-            var directionsDisplay = new google.maps.DirectionsRenderer;
-            directionsDisplay.setMap(map);
+                map.fitBounds(bounds);
+
+                /*
+                Calculate and show directions (async code)
+                */
+                var directionsService = new google.maps.DirectionsService;
+                var directionsDisplay = new google.maps.DirectionsRenderer;
+                directionsDisplay.setMap(map);
 
 
-            var points = [];
-            for(var i=0; i < pathLength; i++) {
-                points.push( new google.maps.LatLng(
-                    pathObj.path[i].latitude,
-                    pathObj.path[i].longitude
-                ));
-            }
+                var points = [];
+                for(var i=0; i < pathLength; i++) {
+                    points.push( new google.maps.LatLng(
+                        pathObj.path[i].latitude,
+                        pathObj.path[i].longitude
+                    ));
+                }
 
-            calculateAndDisplayShortestRoute(directionsService, 
-                                            directionsDisplay,
-                                            points); 
+                calculateAndDisplayShortestRoute(directionsService, 
+                                                directionsDisplay,
+                                                points); 
           
-          });
+            });
         }
     });
 };
+
+
+function calculateCenter(pathObj) {
+    var sumLat = 0;
+    var sumLng = 0;
+    pathObj.path.forEach(function(location){
+        sumLat += location.latitude;
+        sumLng += location.longitude;
+    });
+    var avgLat = sumLat / path.length;
+    var avgLng = sumLng / path.length;
+    return new google.maps.LatLng(
+        avgLat, avgLng
+    );
+}
 
 /**
     INPUT PARAMETERS:
@@ -103,7 +124,6 @@ Template.paths.rendered = function() {
     OUTPUT:
         - dDisplay will display the shortest path that visits all locations
 */
-
 function calculateAndDisplayShortestRoute(dService, dDisplay, points) {
     var response_array = [];
     var numPairs = (points.length) * (points.length - 1) / 2;
@@ -141,14 +161,16 @@ function calculateAndDisplayShortestRoute(dService, dDisplay, points) {
     }
 
     for(var startIndex = 0; startIndex < points.length; startIndex++) {
-        wPLeft = wayPoints.slice(0, startIndex);
+        var wPLeft = wayPoints.slice(0, startIndex);
 
         for(var endIndex = startIndex + 1; endIndex < points.length; endIndex++) {
-            wPRight = wayPoints.slice(endIndex + 1);
+            var wPRight = wayPoints.slice(endIndex + 1);
+
+            var wPts = wPLeft.concat(wayPoints.slice(startIndex + 1, endIndex)).concat(wPRight);
 
             calculateRoute(dService,
                             points[startIndex],
-                            wPLeft.concat(wayPoints.slice(startIndex + 1, endIndex)).concat(wPRight),
+                            wPts,
                             points[endIndex],
                             funcCount);
 
