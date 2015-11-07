@@ -1,3 +1,3 @@
 Template.registerHelper('getSetting', function (setting) {
-  return getSetting(setting);
+	return getSetting(setting);
 });

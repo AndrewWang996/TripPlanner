@@ -18,14 +18,10 @@
 		
 	<div class="page-body">
 		<div class="list">
-			{{#if paths.count}}
-				{{#each paths}}
+			{{#if getPaths.count}}
+				{{#each getPaths}}
 					{{> pathItem}}
 				{{/each}}
-				<!-- 
-				{{#if moreEvents}}
-			    {{> loading}}
-				{{/if}} -->
 			{{else}}
 				<div class="list-item">
 					<div class="list-item-body">
