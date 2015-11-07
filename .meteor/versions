@@ -2,6 +2,8 @@ accounts-base@1.2.0
 accounts-password@1.1.1
 accounts-ui@1.1.5
 accounts-ui-unstyled@1.1.7
+aldeed:autoform@5.5.1
+aldeed:simple-schema@1.1.0
 alethes:pages@1.8.4
 autopublish@1.0.3
 autoupdate@1.2.1
@@ -57,6 +59,7 @@ mizzao:bootstrap-3@3.3.1_1
 mizzao:build-fetcher@0.2.0
 mizzao:jquery-ui@1.11.4
 mobile-status-bar@1.0.3
+momentjs:moment@2.10.6
 mongo@1.1.0
 npm-bcrypt@0.7.8_2
 npm-container@1.1.0
