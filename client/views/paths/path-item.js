@@ -15,5 +15,3 @@ Template.pathItemHeader.events({
     	console.log("hi");
     }
 });
-
-Template.pathItem

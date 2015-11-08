@@ -5,7 +5,7 @@ PathSchema = new SimpleSchema({
 		label: "Unique ID Number"
 	},
 	path: {
-		type: Object,
+		type: [LocationSchema],
 		label: "JSON map of Locations, as defined in the Locations Meteor Collection"
 	},
 	pathName: {

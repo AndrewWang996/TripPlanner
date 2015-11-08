@@ -1,1 +1,0 @@
-PathRoutes = new Mongo.Collection("pathroutes");

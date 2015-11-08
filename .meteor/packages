@@ -19,7 +19,6 @@ meteorhacks:fast-render
 meteorhacks:async
 accounts-ui
 meteorhacks:npm
-npm-container
 simple:reactive-method
 dburles:google-maps
 alethes:pages
