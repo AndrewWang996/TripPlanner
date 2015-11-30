@@ -12,6 +12,8 @@
 */
 Template.locEntry.rendered = function(){
 
+    Meteor.call('removeAllLocations');
+
     this.autorun(function () {
         if (GoogleMaps.loaded()) {
             $('#newLocation')

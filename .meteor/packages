@@ -18,9 +18,7 @@ underscore
 meteorhacks:fast-render
 meteorhacks:async
 accounts-ui
-meteorhacks:npm
 simple:reactive-method
-dburles:google-maps
 alethes:pages
 jeremy:geocomplete
 fourseven:scss

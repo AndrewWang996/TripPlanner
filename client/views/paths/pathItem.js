@@ -7,11 +7,10 @@ Template.pathItemHeader.events({
     'click .js-delete-path': function(event, template) {
         Meteor.call('removePath', this._id, function (error) {
             if (error)
-                alert(error.reason)
+                alert(error.reason);
         });
     },
     'click .js-edit-path': function(event, template) {
-    	Router.route("/paths/:fileName");
-    	console.log("hi");
+    	
     }
 });

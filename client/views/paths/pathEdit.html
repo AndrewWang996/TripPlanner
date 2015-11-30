@@ -1,0 +1,40 @@
+<template name="pathEditHeader">
+	<h1> Editing Path <small>Cool!</small> </h1>
+</template>
+
+
+<template name="pathEdit">
+	{{> contentFor region="pageHeader" template="pathEditHeader"}}
+
+	<div class="page-body">
+		<div class="list-item-header clearfix">
+			{{> pathItemHeader}}
+		</div>
+
+		<div class="row">
+
+			<!-- map object to be attached w/ jQuery -->
+			<div id="pathItemMap{{this.pathName}}" name="pathItemMap{{this.pathName}}" class="half map-container">
+			</div>
+
+			<div class="loc-list">
+				{{#each this.path}}
+					<div class="loc">
+						<span class="glyphicon glyphicon-move"></span>
+
+						{{this.locationName}}
+
+						<span id="deleteLocation" class="glyphicon glyphicon-remove-circle pull-right"></span>
+					</div>
+				{{/each}}
+			</div>
+
+			<input type="text" id="newLocationEdit" class="form-control" placeholder="Example: Paris">
+
+		</div>
+	</div>
+
+	<button id="editPath" class="btn btn-lg btn-primary btn-block">
+        Finish Editing
+	</button>
+</template>
