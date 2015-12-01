@@ -152,24 +152,139 @@ Template.locEntry.events({
 
 
         /*
-            Insert the data into the Paths Meteor Collection
+            Insert the data into the Paths Meteor Collection.
+            Then redirect when finished.
         */
         var currentTime = getDateTime();
-        var path = document.getElementById("newPath");
+        var pathName = document.getElementById("newPath").value;
         
-        var pathObj = {
-            'path': locs,
-            'pathName': path.value,
-            'dateCreated': currentTime
-        };
+        calculateAndStoreShortestRoute(points, pathName, function() {
+            /*
+                Clear the locations on the HTML + in Locations Meteor Collection
+            */
+            $(".location-item").remove();
 
-        Paths.insert(pathObj);
-
-        /*
-            Clear the locations on the HTML + in Locations Meteor Collection
-        */
-        $(".location-item").remove();
-        Router.go('/paths');
-        Meteor.call('removeAllLocations');
+            /*
+                Redirect to /paths
+            */
+            Router.go('/paths');
+            Meteor.call('removeAllLocations');
+        });
     }
 });
+
+
+/**
+    Calculate shortest path visiting all points on map.
+    Store it in Paths Collection afterward.
+
+    @Postcondition: The shortest path visiting all points is stored in the Paths Collection.
+
+    INPUT PARAMETERS:
+        - points = [google.maps.LatLng]
+            list of locations to visit
+        - pathName = name of the path
+        - redirectCallback = callback function to redirect to /paths
+        
+
+    OUTPUT:
+        None
+*/
+function calculateAndStoreShortestRoute(points, pathName, redirectCallback) {
+    var dService = new google.maps.DirectionsService;
+    var response_array = [];
+    var numPairs = (points.length) * (points.length - 1) / 2;
+
+    /*
+        Callback function that takes the response from a route calculation.
+
+        Push the route calculation response into array.
+        If all calculations have been performed (# responses = numPairs),
+            then store the newly computed shortest path inside the Paths Collection.
+    */
+    var funcCount = function(routeCalculationResponse) {
+
+        response_array.push(routeCalculationResponse);
+
+        if(response_array.length === numPairs ) {
+
+            var minDistance = 1 << 30;
+            var minIndex = -1;
+            for(var i=0; i<response_array.length; i++) {
+                var response = response_array[i];
+                var sumDistance = 0;
+                var legs = response.routes[0].legs;
+                legs.forEach( function(leg) {
+                    sumDistance += leg.distance.value;
+                });
+                if(sumDistance < minDistance) {
+                    minDistance = sumDistance;
+                    minIndex = i;
+                }
+            }
+
+            var shortestPathLegs = response_array[minIndex].routes[0].legs;
+
+            var origin = {
+                locationName: shortestPathLegs[0].start_address,
+                latitude: shortestPathLegs[0].start_location.lat(),
+                longitude: shortestPathLegs[0].start_location.lng()
+            }
+            var shortestPath = [origin];
+            shortestPathLegs.forEach( function(leg) {
+                shortestPath.push({
+                    locationName: leg.end_address,
+                    latitude: leg.end_location.lat(),
+                    longitude: leg.end_location.lng()
+                });
+            });
+
+            var currentTime = getDateTime();
+
+            var pathObj = {
+                'path': shortestPath,
+                'pathName': pathName,
+                'dateCreated': getDateTime()
+            };
+
+            Paths.insert(pathObj);
+
+            // call the callback function to redirect to the /paths page.
+            redirectCallback();
+        }
+    };
+
+    /*
+        Push the points into waypoints array.
+    */
+    wayPoints = [];
+    for(var i = 0; i < points.length; i++) {
+        wayPoints.push({
+            location: points[i],
+            stopover: true
+        });
+    }
+
+    /*
+        For each start,
+            for each end,
+                calculate the shortest path that visits all waypoints.
+    */
+    for(var startIndex = 0; startIndex < points.length; startIndex++) {
+        var wPLeft = wayPoints.slice(0, startIndex);
+
+        for(var endIndex = startIndex + 1; endIndex < points.length; endIndex++) {
+            var wPRight = wayPoints.slice(endIndex + 1);
+
+            var wPts = wPLeft.concat(wayPoints.slice(startIndex + 1, endIndex)).concat(wPRight);
+
+            calculateShortestRoute(dService,
+                                    points[startIndex],
+                                    wPts,
+                                    points[endIndex],
+                                    funcCount);
+
+        }
+    }
+}
+
