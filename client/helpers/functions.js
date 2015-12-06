@@ -1,3 +1,35 @@
+
+/*
+    Set up the map.
+
+    INPUT PARAMETERS:
+        map: Google Maps Map that needs to be set up.
+        pathObj: the path object as given by pathSchema.
+*/
+setUpMap = function(map, pathObj) {
+    placeMarkers(map, pathObj);
+
+    /*
+        Calculate and show directions (async code)
+    */
+    var directionsService = new google.maps.DirectionsService;
+    var directionsDisplay = new google.maps.DirectionsRenderer;
+    directionsDisplay.setMap(map);
+
+    var points = [];
+    var pathLength = pathObj.path.length;
+    for(var i=0; i < pathLength; i++) {
+        points.push( new google.maps.LatLng(
+            pathObj.path[i].latitude,
+            pathObj.path[i].longitude
+        ));
+    }
+
+    calculateAndDisplayRoute(directionsService, 
+                            directionsDisplay,
+                            points);
+}
+
 /*
     Create a marker on the map.
 
@@ -17,6 +49,53 @@ createMarker = function(map, point, name) {
     	    title: name
 	    });
 	}
+}
+
+/**
+    Place markers on the map.
+    Resize the map to include all markers aesthetically within view.
+
+    INPUT PARAMETERS:
+        - map = Google Maps Map object
+        - pathObj = the map's path object, containing various locations
+
+    OUTPUT PARAMETERS:
+        - None
+*/
+placeMarkers = function(map, pathObj) {
+    var bounds = new google.maps.LatLngBounds();
+
+    pathObj.path.forEach(function(location){
+        var position = new google.maps.LatLng(location.latitude, location.longitude);
+        createMarker(map, position);
+
+        bounds.extend(position);
+    });
+
+    map.fitBounds(bounds);
+}
+
+/**
+    Calculate the center of the Map by observing its path object.
+
+    INPUT PARAMETERS:
+        - pathObj = the map's path object, containing various locations.
+
+    OUTPUT:
+        - Google Maps LatLng object containing center of locations in pathObj
+*/
+calculateCenter = function(pathObj) {
+    var sumLat = 0;
+    var sumLng = 0;
+    pathObj.path.forEach(function(location){
+        sumLat += location.latitude;
+        sumLng += location.longitude;
+    });
+    var avgLat = sumLat / pathObj.path.length;
+    var avgLng = sumLng / pathObj.path.length;
+    return new google.maps.LatLng(
+        avgLat, avgLng
+    );
 }
 
 /*
