@@ -1,27 +1,62 @@
 
 
 Template.pathEdit.rendered = function() {
-	var locObj;
-	for (locObj in this.data.path) {
-		console.log(locObj.pathName);
-		// Locations.insert(locObj);
-	}
-	$('.loc-list').sortable({
-		stop: function(e, ui) {
+	var pathObj = this.data;
 
-			element = ui.item.get(0);
-			prev = ui.item.prev().get(0);
-			next = ui.item.next().get(0); 
+	Tracker.autorun(function() {
+		if(GoogleMaps.loaded()) {
 
-			if( ! prev ) {
-				
-			} 
-			else if ( ! next ) {
+			var mapElementName = 'pathItemMap' + pathObj.pathName;
+		    var mapElement = document.getElementById(mapElementName);
 
-			}
-			else {
+		    /*
+		        Create map.
+		    */
+		    map = new google.maps.Map(mapElement, {
+		        center: calculateCenter(pathObj),
+		        zoom: 7
+		    });
 
-			}
+		    /*
+				Set up map.
+		    */
+		    setUpMap(map, pathObj); 
+
+
+		    var path = pathObj.path;
+
+			$('.loc-list').sortable({
+				stop: function(e, ui) {
+
+					var element = ui.item;
+
+					var locName = $.trim(element[0].textContent);
+					var oldIndex;
+					for(oldIndex = 0; oldIndex < path.length; oldIndex ++) {
+						var pathLocationName = path[oldIndex].locationName;
+						if(pathLocationName === locName) {
+							break;
+						}
+					}
+
+					var newIndex = 0;
+					var prev = element.prev();
+					while( prev[0] ) {
+						newIndex++;
+						prev = prev.prev();
+					}
+
+					path.splice(newIndex, 0, path[oldIndex]);
+					if(oldIndex < newIndex) {
+						path.splice(oldIndex, 1);
+					}
+					else {
+						path.splice(oldIndex + 1, 1);
+					}
+
+					Meteor.call('updatePath', pathObj.pathName, path);
+				}
+			});
 		}
 	});
 }
