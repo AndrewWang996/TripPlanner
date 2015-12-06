@@ -18,6 +18,12 @@ LocationSchema = new SimpleSchema({
 		type: String,
 		label: "Name of location",
 		min: 1
+	},
+	nickName: {
+		type: String,
+		label: "User given name of location",
+		min: 1,
+		optional: true
 	}
 });
 
