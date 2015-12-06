@@ -1,13 +1,28 @@
 Meteor.startup(function () {
     return Meteor.methods({
-        removeAllLocations: function(){
+        /**
+            Remove all the Location objects from the Locations Collection.
+        */
+        removeAllLocations: function() {
             return Locations.remove({});
         },
-        removeAllPaths: function(){
+        /**
+            Remove all the Path objects from the Paths Collection
+        */
+        removeAllPaths: function() {
             return Paths.remove({});
         },
-        removePath: function(id){
+        /**
+            Remove a specific Path object from the Paths Collection.
+        */
+        removePath: function(id) {
             return Paths.remove({_id: id});
+        },
+        /**
+            Update a Path object with the given id 
+        */
+        updatePath: function(name, newPath) {
+            return Paths.update({pathName: name}, {$set: {path: newPath}});
         }
     }); 
 
