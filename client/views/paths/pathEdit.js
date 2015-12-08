@@ -1,7 +1,10 @@
 
+// not sure if using global variables here is a good idea.
+// even if the span of it is only within this file.
+var pathObj;
 
 Template.pathEdit.rendered = function() {
-	var pathObj = this.data;
+	pathObj = this.data;
 
 	Tracker.autorun(function() {
 		if(GoogleMaps.loaded()) {
@@ -62,6 +65,16 @@ Template.pathEdit.rendered = function() {
 }
 
 Template.pathEdit.events({
+	/**
+		Deletes the location in the Path. 
+		Then updates the Google Map object with the new view with Blaze rendering.
+	*/
+	"click #deleteLocation": function() {
+		var path = pathObj.path;
+		var index = path.indexOf(this);
+		path.splice(index, 1);
+		Meteor.call('updatePath', pathObj.pathName, path);
+	},
 	/*
 		Store the new Path (which should be an array)
 			into the Paths Collection, thereby replacing
