@@ -105,6 +105,32 @@ function getPathFromDOM(path) {
 }
 
 
+Template.pathEdit.helpers({
+	makeLocationDOM: function(locationName) {
+		console.log(locationName);
+
+		var newLocationDOM = document.createElement('div');
+		newLocationDOM.className = "loc new-loc";
+
+		var moveIcon = document.createElement('span');
+		moveIcon.className = "glyphicon glyphicon-move";
+
+
+
+		var deleteIcon = document.createElement('span');
+		deleteIcon.className = "glyphicon glyphicon-remove-circle pull-right";
+		deleteIcon.id = "deleteLocation";
+
+		newLocationDOM.appendChild(moveIcon);
+		newLocationDOM.innerHTML += locationName;
+		// newLocationDOM.appendChild(locationName);
+		newLocationDOM.appendChild(deleteIcon);
+
+		return newLocationDOM;
+	}
+});
+
+
 Template.pathEdit.events({
 	/**
 		Deletes the location in the Path. 
@@ -175,8 +201,15 @@ Template.pathEdit.events({
                 */
                 var DOMLocList = document.getElementById("loc-list");
                 var DOMFirstLoc = DOMLocList.children[0];
-                var DOMLocCopy = DOMFirstLoc.cloneNode(true);
+                var DOMLocCopy = DOMFirstLoc.cloneNode(false);
+
+                console.log(DOMFirstLoc);
+                console.log(DOMLocCopy);
+
                 DOMLocCopy.textContent = locObj.locationName;
+
+                console.log(DOMLocCopy);
+
                 DOMLocList.appendChild(DOMLocCopy);
 
                 /*

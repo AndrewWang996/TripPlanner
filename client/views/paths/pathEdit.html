@@ -19,11 +19,13 @@
 
 			<div id="loc-list">
 				{{#each this.path}}
-					<div class="loc new-loc">
+					{{> pathEditItem}}
+					<!-- <div class="loc new-loc">
 						<span class="glyphicon glyphicon-move"></span>
 							{{this.locationName}}
 						<span id="deleteLocation" class="glyphicon glyphicon-remove-circle pull-right"></span>
-					</div>
+					</div> -->
+					<!-- {{{ makeLocationDOM this.locationName }}} -->
 				{{/each}}
 			</div>
 
@@ -35,4 +37,12 @@
 	<button id="editPath" class="btn btn-lg btn-primary btn-block">
         Finish Editing
 	</button>
+</template>
+
+<template name="pathEditItem">
+	<div class="loc new-loc">
+		<span class="glyphicon glyphicon-move"></span>
+			{{locationName}}
+		<span id="deleteLocation" class="glyphicon glyphicon-remove-circle pull-right"></span>
+	</div>
 </template>
