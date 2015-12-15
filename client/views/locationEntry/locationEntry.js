@@ -30,7 +30,7 @@ Template.locEntry.rendered = function(){
         }
     });
 
-    $('#locations').sortable();
+    // $('#locations').sortable();
 };
 
 Template.locEntry.helpers({
@@ -74,11 +74,6 @@ Template.locEntry.events({
                 };
 
                 Locations.insert( locObj );
-                // Meteor.call('addPath', locObj, function(error) {
-                //     if(error) {
-                //         alert(error.reason);
-                //     }
-                // });
 
                 Session.set('latitude', undefined);
                 Session.set('longitude', undefined);

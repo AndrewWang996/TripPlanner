@@ -17,13 +17,11 @@
 			<div id="pathItemMap{{this.pathName}}" name="pathItemMap{{this.pathName}}" class="half map-container">
 			</div>
 
-			<div class="loc-list">
+			<div id="loc-list">
 				{{#each this.path}}
-					<div class="loc">
+					<div class="loc new-loc">
 						<span class="glyphicon glyphicon-move"></span>
-
-						{{this.locationName}}
-
+							{{this.locationName}}
 						<span id="deleteLocation" class="glyphicon glyphicon-remove-circle pull-right"></span>
 					</div>
 				{{/each}}

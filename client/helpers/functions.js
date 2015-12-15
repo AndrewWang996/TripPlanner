@@ -1,4 +1,24 @@
 
+
+
+/*
+    Converts a Path object into an array of google.maps.LatLng points
+
+    INPUT PARAMETERS:
+        path: a Path object as defined by the Path Schema
+*/
+pathToPoints = function(path) {
+    var points = [];
+    var pathLength = path.length;
+    for(var i=0; i < pathLength; i++) {
+        points.push( new google.maps.LatLng(
+            path[i].latitude,
+            path[i].longitude
+        ));
+    }
+    return points;
+}
+
 /*
     Set up the map.
 
@@ -6,24 +26,15 @@
         map: Google Maps Map that needs to be set up.
         pathObj: the path object as given by pathSchema.
 */
-setUpMap = function(map, pathObj) {
+setUpMap = function(map, directionsService, directionsDisplay, pathObj) {
     placeMarkers(map, pathObj);
 
     /*
         Calculate and show directions (async code)
     */
-    var directionsService = new google.maps.DirectionsService;
-    var directionsDisplay = new google.maps.DirectionsRenderer;
     directionsDisplay.setMap(map);
 
-    var points = [];
-    var pathLength = pathObj.path.length;
-    for(var i=0; i < pathLength; i++) {
-        points.push( new google.maps.LatLng(
-            pathObj.path[i].latitude,
-            pathObj.path[i].longitude
-        ));
-    }
+    var points = pathToPoints(pathObj.path);
 
     calculateAndDisplayRoute(directionsService, 
                             directionsDisplay,

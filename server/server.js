@@ -1,4 +1,24 @@
 Meteor.startup(function () {
+    
+    /*
+        Code causes database to be cleared on server restart
+    */
+    // var globalObject=Meteor.isClient?window:global;
+    // for(var property in globalObject){
+    //   var object=globalObject[property];
+    //   if(object instanceof Meteor.Collection){
+    //       object.remove({});
+    //   }
+    // }
+
+    /*
+        Code causes only Paths collection to be cleared on server restart
+    */
+    Paths.remove({}); 
+
+
+    Locations.remove({});
+
     return Meteor.methods({
         /**
             Remove all the Location objects from the Locations Collection.
@@ -25,23 +45,4 @@ Meteor.startup(function () {
             return Paths.update({pathName: name}, {$set: {path: newPath}});
         }
     }); 
-
-    /*
-        Code causes database to be cleared on server restart
-    */
-    // var globalObject=Meteor.isClient?window:global;
-    // for(var property in globalObject){
-    //   var object=globalObject[property];
-    //   if(object instanceof Meteor.Collection){
-    //       object.remove({});
-    //   }
-    // }
-
-    /*
-        Code causes only Paths collection to be cleared on server restart
-    */
-    Paths.remove({}); 
-
-
-    Locations.remove({});
 });

@@ -45,8 +45,11 @@ Template.paths.rendered = function() {
                     center: calculateCenter(pathObj),
                     zoom: 7
                 });
+
+                var directionsService = new google.maps.DirectionsService;
+                var directionsDisplay = new google.maps.DirectionsRenderer;
                 
-                setUpMap(map, pathObj);
+                setUpMap(map, directionsService, directionsDisplay, pathObj);
             });
         }
     });
