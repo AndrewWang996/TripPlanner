@@ -166,6 +166,9 @@ Template.pathEdit.events({
 	*/
 	"click #editPath": function() {
 		var newPath = getPathFromDOM(path);
+		Paths._collection.update({_id: pathObj._id}, {
+			$set: {path: newPath}
+		});
 		Meteor.call('updatePath', pathObj.pathName, newPath);
 		Router.go('/paths');
 	},
@@ -199,6 +202,9 @@ Template.pathEdit.events({
                 /*
 					Insert the location name into the DOM.
                 */
+                // Paths._collection.update({_id: pathObj._id}, {
+                // 	$set: {path: path}
+                // });
                 var DOMLocList = document.getElementById("loc-list");
                 var DOMFirstLoc = DOMLocList.children[0];
                 var DOMLocCopy = DOMFirstLoc.cloneNode(false);
@@ -211,6 +217,8 @@ Template.pathEdit.events({
                 console.log(DOMLocCopy);
 
                 DOMLocList.appendChild(DOMLocCopy);
+
+
 
                 /*
 					Display the path that is defined by the DOM.
