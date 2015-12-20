@@ -10,6 +10,14 @@ Template.pathEdit.onRendered(function() {
 	pathObj = this.data;
 	path = pathObj.path;
 
+
+	/*
+		Attach everything in current Path to DOM
+	*/
+	path.forEach(function(locObj) {
+		attachToList(locObj.locationName);
+	});
+
 	Tracker.autorun(function() {
 		if(GoogleMaps.loaded()) {
 
@@ -58,15 +66,27 @@ Template.pathEdit.onRendered(function() {
 });
 
 
+/*
+	Attach the location to the HTML list
+
+	INPUT PARAMETERS:
+		- locationName: String with the name of the location
+*/
+function attachToList(locationName) {
+	var locationList = document.getElementById("loc-list");
+	var DOMElement = makeLocationDOM(locationName);
+	locationList.appendChild(DOMElement);
+}
+
 
 /*
 	Scrapes the DOM for the new path.
 	Displays the path on the Google Maps map object.
 
 	INPUT PARAMETERS:
-		path: the global path that contains valuable information about lat / lng
-		directionsService: google.maps.directionsService object (?)
-		directionsDisplay: google.maps.directionsrenderer object (?)
+		- path: the global path that contains valuable information about lat / lng
+		- directionsService: google.maps.directionsService object (?)
+		- directionsDisplay: google.maps.directionsrenderer object (?)
 */
 function displayPathOnDOM(path, directionsService, directionsDisplay) {
 	var newPath = getPathFromDOM(path);
@@ -105,30 +125,34 @@ function getPathFromDOM(path) {
 }
 
 
-Template.pathEdit.helpers({
-	makeLocationDOM: function(locationName) {
-		console.log(locationName);
+/*
+	Create and return the HTML element that contains the text locationName
 
-		var newLocationDOM = document.createElement('div');
-		newLocationDOM.className = "loc new-loc";
+	INPUT PARAMETERS:
+		- locationName: the name of the location / can be any text
 
-		var moveIcon = document.createElement('span');
-		moveIcon.className = "glyphicon glyphicon-move";
+	OUTPUT PARAMETERS:
+		- an HTML element whose innerHTML is the text locationName
+*/
+function makeLocationDOM(locationName) {
+	var newLocationDOM = document.createElement('div');
+	newLocationDOM.className = "loc new-loc ui-sortable-handle";
+
+	var moveIcon = document.createElement('span');
+	moveIcon.className = "glyphicon glyphicon-move";
+
+	var deleteIcon = document.createElement('span');
+	deleteIcon.className = "glyphicon glyphicon-remove-circle pull-right";
+	deleteIcon.id = "deleteLocation";
+
+	newLocationDOM.appendChild(moveIcon);
+	newLocationDOM.innerHTML += " " + locationName;
+	newLocationDOM.appendChild(deleteIcon);
+
+	return newLocationDOM;
+}
 
 
-
-		var deleteIcon = document.createElement('span');
-		deleteIcon.className = "glyphicon glyphicon-remove-circle pull-right";
-		deleteIcon.id = "deleteLocation";
-
-		newLocationDOM.appendChild(moveIcon);
-		newLocationDOM.innerHTML += locationName;
-		// newLocationDOM.appendChild(locationName);
-		newLocationDOM.appendChild(deleteIcon);
-
-		return newLocationDOM;
-	}
-});
 
 
 Template.pathEdit.events({
@@ -202,22 +226,7 @@ Template.pathEdit.events({
                 /*
 					Insert the location name into the DOM.
                 */
-                // Paths._collection.update({_id: pathObj._id}, {
-                // 	$set: {path: path}
-                // });
-                var DOMLocList = document.getElementById("loc-list");
-                var DOMFirstLoc = DOMLocList.children[0];
-                var DOMLocCopy = DOMFirstLoc.cloneNode(false);
-
-                console.log(DOMFirstLoc);
-                console.log(DOMLocCopy);
-
-                DOMLocCopy.textContent = locObj.locationName;
-
-                console.log(DOMLocCopy);
-
-                DOMLocList.appendChild(DOMLocCopy);
-
+                attachToList(locObj.locationName);
 
 
                 /*
@@ -227,6 +236,10 @@ Template.pathEdit.events({
                 */
                 displayPathOnDOM(path, directionsService, directionsDisplay);
 
+
+                /*
+					Delete the session variables
+                */
                 Session.set('latitude', undefined);
                 Session.set('longitude', undefined);
                 Session.set('locationName', undefined);
