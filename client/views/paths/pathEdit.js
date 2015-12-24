@@ -124,6 +124,45 @@ function getPathFromDOM(path) {
 	return newPath;
 }
 
+/*
+    Get the index of the element with proper name 'locationName' in path array.
+    If not found, return -1
+
+    INPUT PARAMETERS:
+        locationName: the name of the location, as a String
+        path: the array of locationObjects
+
+    OUTPUT PARAMETERS:
+        the index of the locationObject with name 'locationName' in the path array,
+            or -1 if not found
+*/
+function getIndexInPath(locationName, path) {
+    console.log(path);
+    for(var i=0; i < path.length; i++) {
+        if(path[i].locationName === locationName) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+/*
+    Remove the element with proper name 'name' from path array
+ */
+function removeFromPath(locationName, path) {
+    var indexInPath = getIndexInPath(locationName, path);
+    if(indexInPath < 0) {
+        throw {
+            name: "Invalid Index",
+            message: "Location not found in Path while editing Paths",
+            toString: function() {
+                return name + " : " + message;
+            }
+        };
+    }
+    path.splice(indexInPath, 1);
+}
+
 
 /*
 	Create and return the HTML element that contains the text locationName
@@ -160,16 +199,18 @@ Template.pathEdit.events({
 		Deletes the location in the Path. 
 		Also deletes the location from the DOM.
 		Display the new path on the Google Maps map object.
+
+        INPUT PARAMETERS:
+            e: This is jQuery Event that contains data on the click.
 	*/
 	"click #deleteLocation": function(e) {
 		/*
 			Remove the Location object from the global path variable
 		*/
-		var locObj = this; 
-			// I don't know why, but 'this' refers to the actual Location object.
-		var index = path.indexOf(locObj);
-		console.log(index);
-		path.splice(index, 1);
+        var deleteElement = e.currentTarget;
+        var parentElement = deleteElement.parentElement;
+        var locationName = parentElement.innerText.trim();
+		removeFromPath(locationName, path);
 
 		/*
 			Remove the location from the DOM.
