@@ -5,6 +5,7 @@
 # but you can also edit it by hand.
 
 
+# mizzao:bootstrap-3
 accounts-base
 accounts-password
 autopublish
@@ -12,7 +13,6 @@ insecure
 blaze
 mizzao:jquery-ui
 less
-mizzao:bootstrap-3
 iron:router
 underscore
 meteorhacks:fast-render
