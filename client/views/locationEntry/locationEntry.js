@@ -12,6 +12,8 @@
 */
 Template.locEntry.onRendered(function() {
 
+    var templateInst = this;
+
     Meteor.call('removeAllLocations');
 
     this.autorun(function () {
@@ -22,9 +24,9 @@ Template.locEntry.onRendered(function() {
                     if(result) {
                         var loc = result.geometry.location;
 
-                        Session.set('latitude', loc.lat());
-                        Session.set('longitude', loc.lng());
-                        Session.set('locationName', this.value);
+                        templateInst._latitude = loc.lat();
+                        templateInst._longitude = loc.lng();
+                        templateInst._locationName = this.value;
                     } 
                 });
         }
@@ -59,26 +61,23 @@ Template.locEntry.events({
     'keyup #newLocation': function(event, template) {
         if(event.keyCode == 13) {
 
-            if(Session.get('latitude') !== undefined) {
+            if(template._latitude !== undefined) {
                 var element = document.getElementById("newLocation");
 
                 /*
                     location object to be inserted into Locations Meteor Collection
                 */
                 var locObj = {
-                    latitude: Session.get('latitude'),
-                    longitude: Session.get('longitude'),
-                    locationName: Session.get('locationName')
+                    latitude: template._latitude,
+                    longitude: template._longitude,
+                    locationName: template._locationName
                 };
 
                 Locations.insert( locObj );
 
-                Session.set('latitude', undefined);
-                Session.set('longitude', undefined);
-                Session.set('locationName', undefined);
-                delete Session.keys.latitude;
-                delete Session.keys.longitude;
-                delete Session.keys.locationName;
+                template._latitude = undefined;
+                template._longitude = undefined;
+                template._locationName = undefined;
 
                 element.value = "";
                 return false;

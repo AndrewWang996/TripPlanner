@@ -2,26 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c3834d15-4822-4310-896a-6dda4acb0865" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/client/stylesheets/aaaa.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/client/stylesheets/basic.less" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/codeStyleSettings.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/client/stylesheets/components.css" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/client/views/home/home_carousel.html" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/stylesheets/components.import.less" afterPath="$PROJECT_DIR$/client/stylesheets/components.import.less" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/views/contact/contact.html" afterPath="$PROJECT_DIR$/client/views/contact/contact.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/views/common/footer.html" afterPath="$PROJECT_DIR$/client/views/common/footer.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/views/home/home.html" afterPath="$PROJECT_DIR$/client/views/home/home.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/views/locationEntry/locationEntry.html" afterPath="$PROJECT_DIR$/client/views/locationEntry/locationEntry.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/views/locationEntry/locationEntry.js" afterPath="$PROJECT_DIR$/client/views/locationEntry/locationEntry.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/stylesheets/main.less" afterPath="$PROJECT_DIR$/client/stylesheets/main.less" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/views/layouts/mainLayout.html" afterPath="$PROJECT_DIR$/client/views/layouts/mainLayout.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/views/common/nav.html" afterPath="$PROJECT_DIR$/client/views/common/nav.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/stylesheets/variables.import.less" afterPath="$PROJECT_DIR$/client/stylesheets/variables.import.less" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="TripPlanner.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="c3834d15-4822-4310-896a-6dda4acb0865" time="1451033033807" ignored="false" />
+    <file path="/Dummy.txt" changelist="c3834d15-4822-4310-896a-6dda4acb0865" time="1451090383297" ignored="false" />
     <file path="/pathEdit.js" changelist="c3834d15-4822-4310-896a-6dda4acb0865" time="1450993519750" ignored="false" />
     <file path="/main.less" changelist="c3834d15-4822-4310-896a-6dda4acb0865" time="1451087847349" ignored="false" />
     <file path="/a.less" changelist="c3834d15-4822-4310-896a-6dda4acb0865" time="1451033717335" ignored="false" />
@@ -36,7 +21,7 @@
     <file path="/contact.html" changelist="c3834d15-4822-4310-896a-6dda4acb0865" time="1451087673605" ignored="false" />
     <file path="/components.import.less" changelist="c3834d15-4822-4310-896a-6dda4acb0865" time="1451088812455" ignored="false" />
     <file path="/locationEntry.html" changelist="c3834d15-4822-4310-896a-6dda4acb0865" time="1451089875262" ignored="false" />
-    <file path="/locationEntry.js" changelist="c3834d15-4822-4310-896a-6dda4acb0865" time="1451090157655" ignored="false" />
+    <file path="/locationEntry.js" changelist="c3834d15-4822-4310-896a-6dda4acb0865" time="1451090621436" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,7 +62,7 @@
       <file leaf-file-name="locationEntry.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/client/views/locationEntry/locationEntry.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="12" column="41" selection-start="385" selection-end="385" vertical-scroll-proportion="0.21621622">
+            <state line="74" column="27" selection-start="2199" selection-end="2199" vertical-scroll-proportion="0.6506024">
               <folding />
             </state>
           </provider>
@@ -651,7 +636,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/client/views/locationEntry/locationEntry.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="41" selection-start="385" selection-end="385" vertical-scroll-proportion="0.21621622">
+        <state line="74" column="27" selection-start="2199" selection-end="2199" vertical-scroll-proportion="0.6506024">
           <folding />
         </state>
       </provider>
