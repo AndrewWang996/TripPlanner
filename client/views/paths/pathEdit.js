@@ -7,8 +7,12 @@ var directionsService;
 var directionsDisplay;
 
 Template.pathEdit.onRendered(function() {
-	pathObj = this.data;
+    var templateInstance = this;
+
+	pathObj = templateInstance.data;
 	path = pathObj.path;
+
+
 
 
 	/*
@@ -20,6 +24,9 @@ Template.pathEdit.onRendered(function() {
 
 	Tracker.autorun(function() {
 		if(GoogleMaps.loaded()) {
+
+            var locList = templateInstance.find('#loc-list');
+            $(locList).height($(locList).height());
 
 			/*
 				Geocode entries in the text field with id "editPath".
@@ -137,7 +144,6 @@ function getPathFromDOM(path) {
             or -1 if not found
 */
 function getIndexInPath(locationName, path) {
-    console.log(path);
     for(var i=0; i < path.length; i++) {
         if(path[i].locationName === locationName) {
             return i;

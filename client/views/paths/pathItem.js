@@ -22,8 +22,15 @@ Template.pathItemHeader.events({
         });
     },
     'click .js-edit-path': function(event, template) {
-    	
+        var newURL = '/paths/edit/' + template.data._id;
+        Router.go(newURL);
     },
+    /**
+     * However, if we click on the dropdown button, we toggle the dropdown menu.
+     *
+     * @param event javascript event describing click
+     * @param template this meteor template
+     */
     'click .dropdown-btn': function(event, template) {
         var isHidden = template._dropdownHidden.get();
         template._dropdownHidden.set( ! isHidden );
