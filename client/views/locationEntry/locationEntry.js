@@ -10,7 +10,7 @@
 
     Make the locations sortable with jQuery.
 */
-Template.locEntry.rendered = function(){
+Template.locEntry.onRendered(function() {
 
     Meteor.call('removeAllLocations');
 
@@ -29,9 +29,7 @@ Template.locEntry.rendered = function(){
                 });
         }
     });
-
-    // $('#locations').sortable();
-};
+});
 
 Template.locEntry.helpers({
 
