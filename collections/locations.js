@@ -19,7 +19,7 @@ LocationSchema = new SimpleSchema({
 		label: "Name of location",
 		min: 1
 	},
-	nickName: {
+    locationHandle: {
 		type: String,
 		label: "User given name of location",
 		min: 1,

@@ -1,27 +1,21 @@
 <template name="pathsHeader">
-	<h1>Paths <small>Here are your paths! <i class="fa fa-smile-o"></i></small></h1>
+    <h1>Paths <small>Here are your paths! <i class="fa fa-smile-o"></i></small></h1>
 
-	<button type="submit" id="removeAllPaths" class="btn btn-lg btn-primary btn-block">Remove All Paths</button>
-	
+    <button type="submit" id="removeAllPaths" class="btn btn-lg btn-primary btn-block">Remove All Paths</button>
+
 </template>
 
 <template name="paths">
-	{{> contentFor region="pageHeader" template="pathsHeader"}}
-		
-	<div class="page-body">
-		<div class="list">
-			{{#if getPaths.count}}
-				{{#each getPaths}}
-					{{> pathItem}}
-				{{/each}}
-			{{else}}
-				<div class="list-item">
-					<div class="list-item-body">
-						Looks like you haven't created any paths yet.
-					</div>
-				</div>
-			{{/if}}
-		</div>
-	</div>
+    {{> contentFor region="pageHeader" template="pathsHeader"}}
+
+    <div class="list">
+        {{#if getPaths.count}}
+            {{#each getPaths}}
+                {{> pathItem}}
+            {{/each}}
+        {{else}}
+            Looks like you haven't created any paths yet.
+        {{/if}}
+    </div>
 </template>
 

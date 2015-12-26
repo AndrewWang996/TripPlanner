@@ -20,11 +20,11 @@
             <input type="text" id="newLocation" placeholder="Example: Paris">
         </div>
 
-        <div id="locations" class="list-group">
+        <div id="locations">
             {{#each allLocations}}
-            <div id="{{idnum}}" class="loc-potential">
+            <div class="loc-potential">
                 {{locationName}}
-                <span id="deleteLocation" class="glyphicon glyphicon-remove-circle pull-right"></span>
+                <span id="deleteLocation" class="fa fa-times pull-right"></span>
             </div>
             {{/each}}
         </div>

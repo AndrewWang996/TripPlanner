@@ -1,45 +1,46 @@
 <template name="pathItemHeader">
-	<div class="list-item-info list-item-header clearfix">
-		<h3 id="pathName">{{this.pathName}}</h3>
-	</div>
+    <div class="path-item-header">
+        <h3 id="pathName">{{this.pathName}}</h3>
+    </div>
 
-	<!-- Dropdown Menu -->
-	<div class="list-item-action dropdown inline">
-    <button class="btn btn-default" data-toggle="dropdown" href="#">
-	  	<i class="fa fa-bars"></i>
-    </button>
+    <!-- Dropdown Menu -->
+    <div class="dropdown">
+        <button class="dropdown-btn" href="#">
+            <i class="fa fa-bars"></i>
+        </button>
 
-    <!-- Delete + Edit buttons (NOT SURE HOW THEY WORK) -->
-    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-      <li role="presentation">
-        <a class="js-delete-path" role="menuitem" tabindex="-1" href="#">Delete</a>
-      </li>
-      <li role="presentation">
-        <a class="js-edit-path" data-toggle="editEventModal" role="menuitem" tabindex="-1" href="/paths/edit/{{this._id}}">Edit</a>
-        	<!-- not sure if I should use an href here?? -->
-      </li>
-    </ul>
-  </div>
+        {{#if dropdownHidden}}
+
+        {{else}}
+            <!-- Delete + Edit buttons (NOT SURE HOW THEY WORK) -->
+            <ul class="dropdown-menu" role="menu">
+                <li>
+                    <a class="js-delete-path" role="menuitem" tabindex="-1" href="#">Delete</a>
+                </li>
+                <li>
+                    <a class="js-edit-path" data-toggle="editEventModal" role="menuitem" tabindex="-1" href="/paths/edit/{{this._id}}">Edit</a>
+                    <!-- not sure if I should use an href here?? -->
+                </li>
+            </ul>
+        {{/if}}
+    </div>
 </template>
 
 <template name="pathItem">
-	<div class="list-item">
-		<div class="list-item-header clearfix">
-			{{> pathItemHeader}}
-		</div>
+    <div class="path-item">
+        <div class="clearfix">
+            {{> pathItemHeader}}
+        </div>
 
-		<div class="row">
+        <!-- map object to be attached w/ jQuery -->
+        <div id="pathItemMap{{this.pathName}}" name="pathItemMap{{this.pathName}}" class="half map-container">
+        </div>
 
-			<!-- map object to be attached w/ jQuery -->
-			<div id="pathItemMap{{this.pathName}}" name="pathItemMap{{this.pathName}}" class="half map-container">
-			</div>
+        {{#each this.path}}
+        <div class="loc">
+            {{this.locationName}}
+        </div>
+        {{/each}}
 
-			{{#each this.path}}
-				<div class="loc">
-					{{this.locationName}}
-				</div>
-			{{/each}}
-
-		</div>
-	</div>
+    </div>
 </template>

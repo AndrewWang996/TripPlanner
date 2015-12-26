@@ -1,3 +1,14 @@
+
+Template.pathItemHeader.onCreated(function() {
+    this._dropdownHidden = new ReactiveVar(true);
+});
+
+Template.pathItemHeader.helpers({
+    dropdownHidden: function() {
+        return Template.instance()._dropdownHidden.get();
+    }
+});
+
 Template.pathItemHeader.events({
 
     /**
@@ -12,5 +23,9 @@ Template.pathItemHeader.events({
     },
     'click .js-edit-path': function(event, template) {
     	
+    },
+    'click .dropdown-btn': function(event, template) {
+        var isHidden = template._dropdownHidden.get();
+        template._dropdownHidden.set( ! isHidden );
     }
 });

@@ -111,7 +111,7 @@ Template.locEntry.events({
             - Paths Meteor Collections adds the new Path.
     */
     'click #submitPath': function() {
-        
+
         /*
             Check that there are at least 2 locations.
         */
@@ -132,7 +132,7 @@ Template.locEntry.events({
         */
         var locs = [];
         var points = [];
-        $(".location-item").each(function() {
+        $(".loc-potential").each(function() {
             var locationName = $.trim( $(this).text() );
             var location = Locations.findOne({'locationName': locationName});
             locs.push(location);
@@ -154,7 +154,7 @@ Template.locEntry.events({
             /*
                 Clear the locations on the HTML + in Locations Meteor Collection
             */
-            $(".location-item").remove();
+            $(".loc-potential").remove();
 
             /*
                 Redirect to /paths
