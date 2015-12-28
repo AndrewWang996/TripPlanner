@@ -1,26 +1,24 @@
 <template name="homeHeader">
-	<h1>Home <small>Check here for news and updates!</small></h1>
-	{{#if isAdmin}}
-		<a href="#" role="button" class="btn btn-primary js-toggle-modal" data-toggle="addPostModal">Add Post</a>
-	{{/if}}
+    <h1>Home <small>Check here for news and updates!</small></h1>
+    {{#if isAdmin}}
+    <a href="#" role="button" class="btn btn-primary js-toggle-modal" data-toggle="addPostModal">Add Post</a>
+    {{/if}}
 </template>
 
 
 <template name="home">
-	{{> contentFor region="pageHeader" template="homeHeader"}}
+    {{> contentFor region="pageHeader" template="homeHeader"}}
 
 
-	<div class="page-body">
-		<div class="list">
-			<div class="list-item">
-				<div class="list-item-header">
-					<h3> This site is still in its beta form. But feel free to check it out! </h3>
-				</div>
+    <div class="list">
+        <div class="list-item">
+            <div class="list-item-header">
+                <h3> This site is still in its beta form. But feel free to check it out! </h3>
+            </div>
 
-				<div class="list-item-body">
-					There are currently no other posts on the server.
-				</div>
-			</div>
-		</div>
-	</div>
+            <div class="list-item-body">
+                There are currently no other posts on the server.
+            </div>
+        </div>
+    </div>
 </template>

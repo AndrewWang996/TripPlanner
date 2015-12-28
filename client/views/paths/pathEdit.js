@@ -1,31 +1,25 @@
 
-// not sure if using global variables here is a good idea.
-// even if the span of it is only within this file.
-var pathObj;
-var path;
-var directionsService;
-var directionsDisplay;
 
 Template.pathEdit.onRendered(function() {
-    var templateInstance = this;
+    var template = this;
 
-	pathObj = templateInstance.data;
-	path = pathObj.path;
+    template._pathObj = template.data;
 
-
+	template._path = template._pathObj.path;
 
 
 	/*
 		Attach everything in current Path to DOM
 	*/
-	path.forEach(function(locObj) {
+	template._path.forEach(function(locObj) {
 		attachToList(locObj.locationName);
 	});
+
 
 	Tracker.autorun(function() {
 		if(GoogleMaps.loaded()) {
 
-            var locList = templateInstance.find('#loc-list');
+            var locList = template.find('#loc-list');
             $(locList).height($(locList).height());
 
 			/*
@@ -37,35 +31,40 @@ Template.pathEdit.onRendered(function() {
                     if(result) {
                         var loc = result.geometry.location;
 
-                        Session.set('latitude', loc.lat());
-                        Session.set('longitude', loc.lng());
-                        Session.set('locationName', this.value);
+                        template._latitude = loc.lat();
+                        template._longitude = loc.lng();
+                        template._locationName = this.value;
                     }
                 });
 
-			var mapElementName = 'pathItemMap' + pathObj.pathName;
+			var mapElementName = 'pathItemMap' + template._pathObj.pathName;
 		    var mapElement = document.getElementById(mapElementName);
 
 		    /*
 		        Create map.
 		    */
-		    map = new google.maps.Map(mapElement, {
-		        center: calculateCenter(pathObj),
+		    template._map = new google.maps.Map(mapElement, {
+		        center: calculateCenter(template._pathObj),
 		        zoom: 7
 		    });
 
-		    directionsService = new google.maps.DirectionsService;
-		    directionsDisplay = new google.maps.DirectionsRenderer;
+            template._directionsService = new google.maps.DirectionsService;
+            template._directionsDisplay = new google.maps.DirectionsRenderer;
 
 		    /*
 				Set up map.
 		    */
-		    setUpMap(map, directionsService, directionsDisplay, pathObj); 
+		    setUpMap(template._map,
+                     template._directionsService,
+                     template._directionsDisplay,
+                     template._pathObj);
 
 
 			$('#loc-list').sortable({
 				stop: function(e, ui) {
-					displayPathOnDOM(path, directionsService, directionsDisplay);
+					displayPathOnDOM(template._path,
+                                     template._directionsService,
+                                     template._directionsDisplay);
 				}
 			});
 		}
@@ -98,6 +97,7 @@ function attachToList(locationName) {
 function displayPathOnDOM(path, directionsService, directionsDisplay) {
 	var newPath = getPathFromDOM(path);
 	var newPoints = pathToPoints(newPath);
+
 	calculateAndDisplayRoute(directionsService, 
 							directionsDisplay, 
 							newPoints);
@@ -167,6 +167,7 @@ function removeFromPath(locationName, path) {
         };
     }
     path.splice(indexInPath, 1);
+
 }
 
 
@@ -184,11 +185,10 @@ function makeLocationDOM(locationName) {
 	newLocationDOM.className = "loc new-loc ui-sortable-handle";
 
 	var moveIcon = document.createElement('span');
-	moveIcon.className = "glyphicon glyphicon-move";
+	moveIcon.className = "fa fa-arrows-v";
 
 	var deleteIcon = document.createElement('span');
-	deleteIcon.className = "glyphicon glyphicon-remove-circle pull-right";
-	deleteIcon.id = "deleteLocation";
+	deleteIcon.className = "fa fa-times delete-location pull-right";
 
 	newLocationDOM.appendChild(moveIcon);
 	newLocationDOM.innerHTML += " " + locationName;
@@ -196,8 +196,6 @@ function makeLocationDOM(locationName) {
 
 	return newLocationDOM;
 }
-
-
 
 
 Template.pathEdit.events({
@@ -209,14 +207,15 @@ Template.pathEdit.events({
         INPUT PARAMETERS:
             e: This is jQuery Event that contains data on the click.
 	*/
-	"click #deleteLocation": function(e) {
+	"click .delete-location": function(e, template) {
 		/*
 			Remove the Location object from the global path variable
 		*/
         var deleteElement = e.currentTarget;
         var parentElement = deleteElement.parentElement;
         var locationName = parentElement.innerText.trim();
-		removeFromPath(locationName, path);
+
+		removeFromPath(locationName, template._path);
 
 		/*
 			Remove the location from the DOM.
@@ -227,7 +226,9 @@ Template.pathEdit.events({
 		/*
 			Display the new path on the Google Maps map object
 		*/
-		displayPathOnDOM(path, directionsService, directionsDisplay);
+		displayPathOnDOM(template._path,
+                         template._directionsService,
+                         template._directionsDisplay);
 	},
 
 	/*
@@ -235,12 +236,12 @@ Template.pathEdit.events({
 			into the Paths Collection, thereby replacing
 			the old Path.
 	*/
-	"click #editPath": function() {
-		var newPath = getPathFromDOM(path);
-		Paths._collection.update({_id: pathObj._id}, {
+	"click #editPath": function(e, template) {
+		var newPath = getPathFromDOM(template._path);
+		Paths._collection.update({_id: template.data._id}, {
 			$set: {path: newPath}
 		});
-		Meteor.call('updatePath', pathObj.pathName, newPath);
+		Meteor.call('updatePath', template.data.pathName, newPath);
 		Router.go('/paths');
 	},
 
@@ -252,22 +253,22 @@ Template.pathEdit.events({
 	'keyup #newLocationEdit': function(event, template) {
         if(event.keyCode == 13) {
 
-            if(Session.get('latitude') !== undefined) {
+            if(template._latitude !== undefined) {
                 var element = document.getElementById("newLocationEdit");
 
                 /*
                     location object to be inserted into Locations Meteor Collection
                 */
                 var locObj = {
-                    latitude: Session.get('latitude'),
-                    longitude: Session.get('longitude'),
-                    locationName: Session.get('locationName')
+                    latitude: template._latitude,
+                    longitude: template._longitude,
+                    locationName: template._locationName
                 };
 
                 /*
                 	Push the Location object into the global path.
                 */
-                path.push(locObj);
+                template._path.push(locObj);
 
 
                 /*
@@ -281,18 +282,17 @@ Template.pathEdit.events({
 					Note that the path has not yet been committed to the actual Path
 						in the database.
                 */
-                displayPathOnDOM(path, directionsService, directionsDisplay);
+                displayPathOnDOM(template._path,
+                                 template._directionsService,
+                                 template._directionsDisplay);
 
 
                 /*
 					Delete the session variables
                 */
-                Session.set('latitude', undefined);
-                Session.set('longitude', undefined);
-                Session.set('locationName', undefined);
-                delete Session.keys.latitude;
-                delete Session.keys.longitude;
-                delete Session.keys.locationName;
+                template._latitude = undefined;
+                template._longitude = undefined;
+                template._locationName = undefined;
 
                 element.value = "";
                 return false;

@@ -5,6 +5,8 @@
 .navbar-nav {
     margin-top: 0;
     margin-bottom: 0;
+    position: relative;
+    float: left;
 }
 
 .navbar {
@@ -20,6 +22,7 @@
     font-size: 30px;
     padding: 10px;
     float: left;
+    position: relative;
 }
 
 .page-header {
@@ -49,7 +52,7 @@
         display: none;
     }
 
-    .navbar-header .navbar-toggle {
+    .navbar-toggle {
         display: inherit !important;
     }
 
@@ -75,26 +78,24 @@
             float: right;
             vertical-align: middle;
             margin: 5px;
-            border-radius: 5px;
+        }
+
+        #nav-toggle {
+            border-radius: @main-radius;
         }
 
         #main-nav {
-            height: 20px;
 
             ul {
-                position: relative;
-                list-style-type: none;
-                margin: 0;
-                padding: 0;
-                height: 100%;
 
                 a {
-                    height: 100%;
 
                     li {
+//                        float: left;
                         display: inline-block;
                         font-family: @navbar-item-font-family;
                         font-size: 20px;
+                        vertical-align: middle;
                         padding: 15px;
                     }
                 }
@@ -212,10 +213,50 @@ button{
     }
 }
 
+#nav-dropdown-menu {
+    display: none;
+    position: relative;
+    top: 100%;
+
+    width: 100%;
+    background-color: #ffffff;
+    font-size: 14px;
+
+    padding: 5px 0;
+    margin: 2px 0 0;
+    border-top: 1px solid #cccccc;
+    border-bottom: 1px solid #cccccc;
+
+    li > a {
+        font-family: @navbar-item-font-family;
+        font-size: 24px;
+        text-align: center;
+        display: block;
+        padding: 5px 20px;
+        font-weight: normal;
+        color: black;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #dadada;
+        }
+    }
+}
+
+
+
 .hidden {
     display: none;
 }
 
 .path-item {
     padding-bottom: 30px;
+}
+
+.ui-sortable-handle {
+    cursor: move;
+
+    .delete-location {
+        cursor: pointer;
+    }
 }
