@@ -19,8 +19,7 @@ Template.pathEdit.onRendered(function() {
 	Tracker.autorun(function() {
 		if(GoogleMaps.loaded()) {
 
-            var locList = template.find('#loc-list');
-            $(locList).height($(locList).height());
+
 
 			/*
 				Geocode entries in the text field with id "editPath".
@@ -117,7 +116,7 @@ function displayPathOnDOM(path, directionsService, directionsDisplay) {
 */
 function getPathFromDOM(path) {
 	var newPath = [];
-	$(".new-loc").each(function(i,v) {
+	$(".loc-list-item").each(function(i,v) {
 		var locationName = $.trim(v.textContent);
 		for(var i=0; i<path.length; i++) {
 			var locObj = path[i];
@@ -182,7 +181,7 @@ function removeFromPath(locationName, path) {
 */
 function makeLocationDOM(locationName) {
 	var newLocationDOM = document.createElement('div');
-	newLocationDOM.className = "loc new-loc ui-sortable-handle";
+	newLocationDOM.className = "loc loc-list-item ui-sortable-handle";
 
 	var moveIcon = document.createElement('span');
 	moveIcon.className = "fa fa-arrows-v";
@@ -199,6 +198,24 @@ function makeLocationDOM(locationName) {
 
 
 Template.pathEdit.events({
+
+    /**
+     * On mouse down on a list item, set the height of the list to static.
+     * @param e event
+     * @param template current template
+     */
+    'mousedown .loc-list-item': function(e, template) {
+        $('#loc-list').height($('#loc-list').height());
+    },
+    /**
+     * On mouse up, let list height be dynamically controlled again.
+     * @param e javascript event
+     * @param template current template
+     */
+    'mouseup .loc-list-item': function(e, template) {
+        $('#loc-list').height('auto');
+    },
+
 	/**
 		Deletes the location in the Path. 
 		Also deletes the location from the DOM.

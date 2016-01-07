@@ -5,38 +5,35 @@
 # but you can also edit it by hand.
 
 
-# mizzao:bootstrap-3
+# mizzao:bootstrap-3        # bootstrap
+# meteorhacks:fast-render   # for rendering quickly, honestly not really sure
+# mobile-experience         # use for building native mobile apps iOS / Android
+# alethes:pages             # use for infinite scroll
+# underscore                # some helpers for processing arrays eg _.each([1, 2, 3], callBackFunction)
+# fourseven:scss            # SASS - Syntactically Awesome Style Sheets
+
 accounts-base
 accounts-password
+accounts-ui
+
+meteor-base
+blaze-html-templates
+iron:router
+
+tracker
+reactive-var
+
 autopublish
 insecure
-blaze
+
 mizzao:jquery-ui
+jquery
+
 less
-iron:router
-underscore
-meteorhacks:fast-render
-meteorhacks:async
-accounts-ui
-simple:reactive-method
-alethes:pages
-jeremy:geocomplete
-fourseven:scss
 chrismbeckett:fontawesome4
+
+meteorhacks:async
+jeremy:geocomplete
+
 aldeed:autoform
 aldeed:collection2
-standard-minifiers
-meteor-base
-mobile-experience
-mongo
-blaze-html-templates
-session
-jquery
-tracker
-logging
-reload
-random
-ejson
-spacebars
-check
-reactive-var
