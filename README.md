@@ -7,4 +7,4 @@ Yay!
 
 ## How to use
 
-Go to TripPlanner2000.meteor.com and check it out!
+Go to planning.ml and check it out!

@@ -142,12 +142,12 @@ Template.locEntry.events({
          */
         var pathName = document.getElementById("newPath").value;
         Meteor.call('pathNameIsTaken', pathName, function(error, result) {
+            /*
+                If there is another path with the same name.
+             */
             if(result) {
                 alert('Please enter a different path name that has not been used.');
             }
-            /*
-                If there is no other path with the same name
-             */
             else {
                 /*
                      Loop over the locations (front end).
