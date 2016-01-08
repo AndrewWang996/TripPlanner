@@ -14,12 +14,11 @@ Meteor.startup(function () {
     /*
         Code causes only Paths collection to be cleared on server restart
     */
-    Paths.remove({}); 
-
-
+    Paths.remove({});
     Locations.remove({});
 
     return Meteor.methods({
+
         /**
             Remove all the Location objects from the Locations Collection.
         */
@@ -33,6 +32,19 @@ Meteor.startup(function () {
             return Paths.remove({});
         },
         /**
+            Insert a new Path object.
+         */
+        insertPath: function(pathObj) {
+            check(pathObj, PathSchema);
+            return Paths.insert(pathObj);
+        },
+        /**
+            Determines whether the pathName has already been used
+         */
+        pathNameIsTaken: function(pathName) {
+            return Paths.find({pathName: pathName}).count() > 0;
+        },
+        /**
             Remove a specific Path object from the Paths Collection.
         */
         removePath: function(id) {
@@ -42,6 +54,9 @@ Meteor.startup(function () {
             Update a Path object with the given id 
         */
         updatePath: function(name, newPath) {
+            check({locations: newPath}, new SimpleSchema({
+                locations: [LocationSchema]
+            }));
             return Paths.update({pathName: name}, {$set: {path: newPath}});
         }
     }); 

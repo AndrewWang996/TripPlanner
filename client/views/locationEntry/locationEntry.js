@@ -6,7 +6,6 @@ var MapHelpers = GLOBAL.MapHelpers;
 
 Template.locEntry.onCreated(function() {
     var template = this;
-
     template._locations = new ReactiveVar([]);
 });
 
@@ -49,7 +48,6 @@ Template.locEntry.helpers({
     */
     allLocations: function() {
         return Template.instance()._locations.get();
-        // return Locations.find();
     }
 });
 
@@ -83,7 +81,6 @@ Template.locEntry.events({
                     locationName: template._locationName
                 };
 
-                // Locations.insert( locObj );
                 var _locations = template._locations.get();
                 _locations.push(locObj);
                 template._locations.set( _locations );
@@ -134,7 +131,6 @@ Template.locEntry.events({
         /*
             Check that there are at least 2 locations.
         */
-        // var numLocs = Locations.find().count();
         var numLocs = template._locations.length;
         if(numLocs < 2) {
             alert('Please submit at least 2 locations.');
@@ -142,51 +138,64 @@ Template.locEntry.events({
         }
 
         /*
-            Loop over the locations (front end).
-            @Precondition:
-                - Set of locations on the HTML is equivalent 
-                    to the set of locations in Locations Meteor Collection.
-            @Postcondition:
-                - "locs" array containing location object.
-                - "points" array containing Google Maps LatLng object.
-        */
-        var locs = [];
-        var points = [];
-        $(".loc-potential").each(function() {
-            var locationName = $.trim( $(this).text() );
-            var _locations = template._locations.get();
-            var location = null;
-            for(var i=0; i<_locations.length; i++) {
-                if(_locations[i].locationName === locationName) {
-                    location = _locations[i];
-                }
-            }
-            locs.push(location);
-            points.push(new google.maps.LatLng(
-                location.latitude,
-                location.longitude
-            ));
-        });
-
-
-        /*
-            Insert the data into the Paths Meteor Collection.
-            Then redirect when finished.
-        */
+            Make sure that the pathName is not already taken
+         */
         var pathName = document.getElementById("newPath").value;
-        
-        MapHelpers.calculateAndStoreShortestRoute(points, pathName, function() {
+        Meteor.call('pathNameIsTaken', pathName, function(error, result) {
+            if(result) {
+                alert('Please enter a different path name that has not been used.');
+            }
             /*
-                Clear the locations on the HTML + in Locations Meteor Collection
-            */
-            $(".loc-potential").remove();
+                If there is no other path with the same name
+             */
+            else {
+                /*
+                     Loop over the locations (front end).
+                     @Precondition:
+                         - Set of locations on the HTML is equivalent
+                         to the set of locations in Locations Meteor Collection.
+                     @Postcondition:
+                         - "locs" array containing location object.
+                         - "points" array containing Google Maps LatLng object.
+                 */
+                var locs = [];
+                var points = [];
+                $(".loc-potential").each(function() {
+                    var locationName = $.trim( $(this).text() );
+                    var _locations = template._locations.get();
+                    var location = null;
+                    for(var i=0; i<_locations.length; i++) {
+                        if(_locations[i].locationName === locationName) {
+                            location = _locations[i];
+                        }
+                    }
+                    locs.push(location);
+                    points.push(new google.maps.LatLng(
+                        location.latitude,
+                        location.longitude
+                    ));
+                });
 
-            /*
-                Redirect to /paths
-            */
-            Router.go('/paths');
-            // Meteor.call('removeAllLocations');
-            template._locations.set([]);
+
+                /*
+                     Insert the data into the Paths Meteor Collection.
+                     Then redirect when finished.
+                 */
+                MapHelpers.calculateAndStoreShortestRoute(points, pathName, function() {
+                    /*
+                         Clear the locations on the HTML + in Locations Meteor Collection
+                     */
+                    $(".loc-potential").remove();
+
+                    /*
+                         Redirect to /paths
+                     */
+                    Router.go('/paths');
+                    template._locations.set([]);
+                });
+            }
         });
+
+
     }
 });

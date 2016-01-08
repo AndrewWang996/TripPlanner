@@ -36,10 +36,6 @@ Template.paths.onRendered(function() {
                 var mapElementName = 'pathItemMap' + pathObj.pathName;
                 var mapElement = document.getElementById(mapElementName);
 
-                console.log(pathObj.pathName);
-                console.log(mapElementName);
-                console.log(mapElement);
-
                 /*
                     Create map.
                     Recenter map around center of locations in pathObj
