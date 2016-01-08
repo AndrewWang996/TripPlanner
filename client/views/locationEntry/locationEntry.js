@@ -1,9 +1,17 @@
 var helpers = GLOBAL.helpers;
 var MapHelpers = GLOBAL.MapHelpers;
 
+
+
+
+Template.locEntry.onCreated(function() {
+    var template = this;
+
+    template._locations = new ReactiveVar([]);
+});
+
 /**
-    When the template is rendered, call this function.
-    Note: I'm not sure if the template is only rendered once.
+    Upon render:
 
     We geocomplete the location search field in the HTML.
     We add a listener to say that when the location is found,
@@ -13,9 +21,9 @@ var MapHelpers = GLOBAL.MapHelpers;
 */
 Template.locEntry.onRendered(function() {
 
-    var templateInst = this;
+    var template = this;
 
-    Meteor.call('removeAllLocations');
+    // Meteor.call('removeAllLocations');
 
     this.autorun(function () {
         if (GoogleMaps.loaded()) {
@@ -25,9 +33,9 @@ Template.locEntry.onRendered(function() {
                     if(result) {
                         var loc = result.geometry.location;
 
-                        templateInst._latitude = loc.lat();
-                        templateInst._longitude = loc.lng();
-                        templateInst._locationName = this.value;
+                        template._latitude = loc.lat();
+                        template._longitude = loc.lng();
+                        template._locationName = this.value;
                     } 
                 });
         }
@@ -40,7 +48,8 @@ Template.locEntry.helpers({
         return the locations in Locations Meteor Collection
     */
     allLocations: function() {
-        return Locations.find();
+        return Template.instance()._locations.get();
+        // return Locations.find();
     }
 });
 
@@ -59,8 +68,8 @@ Template.locEntry.events({
 
         Implementation still somewhat crude.
     */
-    'keyup #newLocation': function(event, template) {
-        if(event.keyCode == 13) {
+    'keyup #newLocation': function(e, template) {
+        if(e.keyCode == 13) {
 
             if(template._latitude !== undefined) {
                 var element = document.getElementById("newLocation");
@@ -74,7 +83,10 @@ Template.locEntry.events({
                     locationName: template._locationName
                 };
 
-                Locations.insert( locObj );
+                // Locations.insert( locObj );
+                var _locations = template._locations.get();
+                _locations.push(locObj);
+                template._locations.set( _locations );
 
                 template._latitude = undefined;
                 template._longitude = undefined;
@@ -96,10 +108,16 @@ Template.locEntry.events({
                 Locations Meteor Collection by id.
             - The location is reactively removed from HTML
     */
-    'click #deleteLocation': function() {
-        Locations.remove({
-            _id: Locations.findOne({locationName: this.locationName})._id
-        });
+    'click #deleteLocation': function(e, template) {
+        var locName = this.locationName;
+        var _locations = template._locations.get();
+        for(var i=0; i<_locations.length; i++) {
+            if(_locations[i].locationName === locName) {
+                _locations.splice(i, 1);
+                template._locations.set(_locations);
+                break;
+            }
+        }
     },
 
     /**
@@ -111,12 +129,13 @@ Template.locEntry.events({
             - Locations Meteor Collection is emptied.
             - Paths Meteor Collections adds the new Path.
     */
-    'click #submitPath': function() {
+    'click #submitPath': function(e, template) {
 
         /*
             Check that there are at least 2 locations.
         */
-        var numLocs = Locations.find().count();
+        // var numLocs = Locations.find().count();
+        var numLocs = template._locations.length;
         if(numLocs < 2) {
             alert('Please submit at least 2 locations.');
             return;
@@ -135,7 +154,13 @@ Template.locEntry.events({
         var points = [];
         $(".loc-potential").each(function() {
             var locationName = $.trim( $(this).text() );
-            var location = Locations.findOne({'locationName': locationName});
+            var _locations = template._locations.get();
+            var location = null;
+            for(var i=0; i<_locations.length; i++) {
+                if(_locations[i].locationName === locationName) {
+                    location = _locations[i];
+                }
+            }
             locs.push(location);
             points.push(new google.maps.LatLng(
                 location.latitude,
@@ -150,7 +175,7 @@ Template.locEntry.events({
         */
         var pathName = document.getElementById("newPath").value;
         
-        calculateAndStoreShortestRoute(points, pathName, function() {
+        MapHelpers.calculateAndStoreShortestRoute(points, pathName, function() {
             /*
                 Clear the locations on the HTML + in Locations Meteor Collection
             */
@@ -160,121 +185,8 @@ Template.locEntry.events({
                 Redirect to /paths
             */
             Router.go('/paths');
-            Meteor.call('removeAllLocations');
+            // Meteor.call('removeAllLocations');
+            template._locations.set([]);
         });
     }
 });
-
-
-/**
-    Calculate shortest path visiting all points on map.
-    Store it in Paths Collection afterward.
-
-    @Postcondition: The shortest path visiting all points is stored in the Paths Collection.
-
-    INPUT PARAMETERS:
-        - points = [google.maps.LatLng]
-            list of locations to visit
-        - pathName = name of the path
-        - redirectCallback = callback function to redirect to /paths
-        
-
-    OUTPUT:
-        None
-*/
-function calculateAndStoreShortestRoute(points, pathName, redirectCallback) {
-    var dService = new google.maps.DirectionsService;
-    var response_array = [];
-    var numPairs = (points.length) * (points.length - 1) / 2;
-
-    /*
-        Callback function that takes the response from a route calculation.
-
-        Push the route calculation response into array.
-        If all calculations have been performed (# responses = numPairs),
-            then store the newly computed shortest path inside the Paths Collection.
-    */
-    var funcCount = function(routeCalculationResponse) {
-
-        response_array.push(routeCalculationResponse);
-
-        if(response_array.length === numPairs ) {
-
-            var minDistance = 1 << 30;
-            var minIndex = -1;
-            for(var i=0; i<response_array.length; i++) {
-                var response = response_array[i];
-                var sumDistance = 0;
-                var legs = response.routes[0].legs;
-                legs.forEach( function(leg) {
-                    sumDistance += leg.distance.value;
-                });
-                if(sumDistance < minDistance) {
-                    minDistance = sumDistance;
-                    minIndex = i;
-                }
-            }
-
-            var shortestPathLegs = response_array[minIndex].routes[0].legs;
-
-            var origin = {
-                locationName: shortestPathLegs[0].start_address,
-                latitude: shortestPathLegs[0].start_location.lat(),
-                longitude: shortestPathLegs[0].start_location.lng()
-            }
-            var shortestPath = [origin];
-            shortestPathLegs.forEach( function(leg) {
-                shortestPath.push({
-                    locationName: leg.end_address,
-                    latitude: leg.end_location.lat(),
-                    longitude: leg.end_location.lng()
-                });
-            });
-
-            var pathObj = {
-                'path': shortestPath,
-                'pathName': pathName,
-                'dateCreated': helpers.getDateTime()
-            };
-
-            Paths.insert(pathObj);
-
-            // call the callback function to redirect to the /paths page.
-            redirectCallback();
-        }
-    };
-
-    /*
-        Push the points into waypoints array.
-    */
-    wayPoints = [];
-    for(var i = 0; i < points.length; i++) {
-        wayPoints.push({
-            location: points[i],
-            stopover: true
-        });
-    }
-
-    /*
-        For each start,
-            for each end,
-                calculate the shortest path that visits all waypoints.
-    */
-    for(var startIndex = 0; startIndex < points.length; startIndex++) {
-        var wPLeft = wayPoints.slice(0, startIndex);
-
-        for(var endIndex = startIndex + 1; endIndex < points.length; endIndex++) {
-            var wPRight = wayPoints.slice(endIndex + 1);
-
-            var wPts = wPLeft.concat(wayPoints.slice(startIndex + 1, endIndex)).concat(wPRight);
-
-            MapHelpers.calculateShortestRoute(dService,
-                                    points[startIndex],
-                                    wPts,
-                                    points[endIndex],
-                                    funcCount);
-
-        }
-    }
-}
-
