@@ -1,3 +1,4 @@
+var MapHelpers = GLOBAL.MapHelpers;
 
 
 Template.pathEdit.onRendered(function() {
@@ -43,7 +44,7 @@ Template.pathEdit.onRendered(function() {
 		        Create map.
 		    */
 		    template._map = new google.maps.Map(mapElement, {
-		        center: calculateCenter(template._pathObj),
+		        center: MapHelpers.calculateCenter(template._pathObj),
 		        zoom: 7
 		    });
 
@@ -53,10 +54,10 @@ Template.pathEdit.onRendered(function() {
 		    /*
 				Set up map.
 		    */
-		    setUpMap(template._map,
-                     template._directionsService,
-                     template._directionsDisplay,
-                     template._pathObj);
+		    MapHelpers.setUpMap(template._map,
+                                template._directionsService,
+                                template._directionsDisplay,
+                                template._pathObj);
 
 
 			$('#loc-list').sortable({
@@ -97,9 +98,9 @@ function displayPathOnDOM(path, directionsService, directionsDisplay) {
 	var newPath = getPathFromDOM(path);
 	var newPoints = pathToPoints(newPath);
 
-	calculateAndDisplayRoute(directionsService, 
-							directionsDisplay, 
-							newPoints);
+	MapHelpers.calculateAndDisplayRoute(directionsService,
+							            directionsDisplay,
+							            newPoints);
 }
 
 /*

@@ -1,4 +1,5 @@
-
+var helpers = GLOBAL.helpers;
+var MapHelpers = GLOBAL.MapHelpers;
 
 /**
     When the template is rendered, call this function.
@@ -147,7 +148,6 @@ Template.locEntry.events({
             Insert the data into the Paths Meteor Collection.
             Then redirect when finished.
         */
-        var currentTime = getDateTime();
         var pathName = document.getElementById("newPath").value;
         
         calculateAndStoreShortestRoute(points, pathName, function() {
@@ -231,12 +231,10 @@ function calculateAndStoreShortestRoute(points, pathName, redirectCallback) {
                 });
             });
 
-            var currentTime = getDateTime();
-
             var pathObj = {
                 'path': shortestPath,
                 'pathName': pathName,
-                'dateCreated': getDateTime()
+                'dateCreated': helpers.getDateTime()
             };
 
             Paths.insert(pathObj);
@@ -270,7 +268,7 @@ function calculateAndStoreShortestRoute(points, pathName, redirectCallback) {
 
             var wPts = wPLeft.concat(wayPoints.slice(startIndex + 1, endIndex)).concat(wPRight);
 
-            calculateShortestRoute(dService,
+            MapHelpers.calculateShortestRoute(dService,
                                     points[startIndex],
                                     wPts,
                                     points[endIndex],

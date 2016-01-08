@@ -23,7 +23,7 @@ iron:router
 tracker
 reactive-var
 
-autopublish
+# autopublish               # Make all documents available to the client
 insecure
 
 mizzao:jquery-ui
